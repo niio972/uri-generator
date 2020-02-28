@@ -4,11 +4,6 @@ body{
    font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
    /* font-size:85%; */
 }
-.message {
-    font-weight: 600;
-    color: blue;
-}
-
 
 .breadcrumb {
   color: #777;
@@ -79,11 +74,6 @@ footer {
 	border-top: 1px solid #ddd;
 	padding-top: 20px;
 }
-
-h2{
-  color: #69b845;
-}
-
 h1 {
     font-family: 'Lobster', cursive;
     font-weight: 500;
@@ -91,13 +81,13 @@ h1 {
     color: #00336d;
 }
 .success{
-  background-color: rgb(235, 233, 137);
+  background-color: #ffe75e;
     font-size: 1.2em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding: 10px 8px 10px 8px;
 }
 .installation{
-  background-color: rgb(218, 216, 216);
+  background-color: #f2fff0;
     font-size: 1.2em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding: 10px 8px 10px 8px;
@@ -106,7 +96,7 @@ h1 {
 }
 
 .navbar {
-    background-color: rgb(72, 197, 93);
+    background-color: #7dc383;
     font-size: 1.2em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: rgb(255, 255, 255);

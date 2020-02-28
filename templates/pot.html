@@ -1,0 +1,18 @@
+{% extends "generator.html" %}
+{% block title %}
+Pot
+{% endblock %}
+{% block content %}
+A pot is the host a one or several plants.
+<form method="post">
+    <br>
+    <label for="potExp">The pot is related to an experiment </label>
+    <br>
+    <input type="text" id="potExp">
+    <br>
+    <button id="submit" type="submit" class="btn btn-primary" v-on:click="emit('myevent')"> 
+    Generate URI 
+    </button>
+</form>
+
+{% endblock %}

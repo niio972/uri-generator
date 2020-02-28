@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='select2.min.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css-loader.css')}}">
+    </head>
+
+    <body>
+      <div class="wrap">
+        <div class="container-fluid">
+          <div class="navbar">
+            <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
+            <a href="{{ url_for('experiment') }}" class="navbar-item">Experiment</a>
+            <a href="{{ url_for('device') }}" class="navbar-item">Device</a>
+            <a href="{{ url_for('scientificObject') }}" class="navbar-item">Scientific Object</a>
+            <a href="{{ url_for('document') }}" class="navbar-item">Document</a>
+          </div>
+          <div  class="col-md-12">
+            
+            <div class="body-content">
+              {% block content %}
+              {% endblock %}
+              <hr/>
+              
+          </div>              
+        </div>
+
+       </div>
+        <footer>
+          <p>© 2020 - INRAE, UMR Mistea</p>
+      </footer>
+    </div>
+    </body>
+
+<script href="js/vue.js"></script>
+<script href="js/jquery.min.js"></script>
+<script href="js/jquery-ui.js"></script>
+<script href='js/jquery.dataTables.js'></script>
+<script href="js/tether.min.js"></script>
+<script href="js/bootstrap.min.js"></script>
+<script href="js/select2.min.js"></script>
+
+</html>

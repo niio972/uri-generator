@@ -1,0 +1,13 @@
+{% extends "generator.html" %}
+{% block title %}
+Experiment
+{% endblock %}
+{% block content %}
+<p>Experiment is attached to a project</p>
+
+<textarea name="Name of Experiment" id="expName" cols="30" rows="10">Experiment Name</textarea>
+<br>
+<button id="submit" type="submit" class="btn btn-primary" v-on:click="$emit('myevent')" > 
+    Generate URI 
+</button>
+{% endblock %}

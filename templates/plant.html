@@ -1,0 +1,31 @@
+{% extends "generator.html" %}
+{% block title %}
+Plant
+{% endblock %}
+{% block content %}
+<form class="installation", method="post">
+    <label for="hostname">Host Name</label>
+    <br>
+    <input type="text" name="hostname" id="hostname"  value="opensilex.org">
+    <br>
+
+    <label for="installationName" >Installation name</label>
+    <br>
+    <input type="text" name="installationName" id="installationName" value="Diaphen">
+
+    <label for="plyear">What year did you sow this plant ?</label>
+    <br>
+    <input type="text" name="plyear" id="plyear" value=2019>
+    <br>
+    
+    <label for="relExp">What is the related experiment ?</label>
+    <br>
+    <input type="text" id="relExp" name="relExp" value="Dia-2017">
+    <br>
+
+    <button id="submit" type=submit class="btn btn-primary" v-on:click="TODO"> 
+        Generate URI 
+    </button>
+</form>
+
+{% endblock %}

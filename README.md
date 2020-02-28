@@ -11,4 +11,6 @@ export FLASK_APP=generator.py
 python3 -m flask run
 ```
 
-You will need to install the appropriate libraries. to od so conda environment or venv are suitable.
+You will need to install the appropriate libraries. to od so conda environment or venv are suitable.  
+For more details about the Flask framework you can see the official documentation [here](https://flask.palletsprojects.com/en/1.1.x/)  
+For details about the VSCode implémentation see [here](https://code.visualstudio.com/docs/python/tutorial-flask)

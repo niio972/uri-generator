@@ -90,6 +90,12 @@ h1 {
     line-height: 1.1;
     color: #00336d;
 }
+.success{
+  background-color: rgb(235, 233, 137);
+    font-size: 1.2em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding: 10px 8px 10px 8px;
+}
 .installation{
   background-color: rgb(218, 216, 216);
     font-size: 1.2em;

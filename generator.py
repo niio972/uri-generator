@@ -62,37 +62,16 @@ def leaf():
 
 @app.route('/success')
 def index():
-    if 'hostname' in session:
-        return 'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI']) + " for host " + escape(session['hostname'])
-    return 'You are not logged in'
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session['hostname'] = request.form['hostname']
-        return redirect(url_for('index'))
-    return '''
-        <form method="post">
-            <p><input type=text name=hostname>
-            <p><input type=submit value=Login>
-        </form>
-    '''
-
-@app.route('/logout')
-def logout():
-    # remove the username from the session if it's there
-    session.pop('hostname', None)
-    return redirect(url_for('index'))   
+    return render_template("success.html")
+    #return   'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI'])
 
 @app.route('/uri/<path:subpath>', methods=['GET', 'POST'])
 def execute_request(subpath):
     # show the subpath after /path/
     session['subpath']=subpath[0:-1]
     session['hostname'] = request.form['hostname']
-    session['installationName'] = request.form['installationName']
-    session['plyear'] = request.form['plyear']        
-    session['relExp'] = request.form['relExp']        
-    URI = URIgenerator(host= session['hostname'], installation=session['installationName'] , resource_type=session['subpath'], year=session['plyear'], project=session['relExp'])
+    session['installationName'] = request.form['installationName']       
+    URI = URIgenerator(host= session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
     session['URI']=URI
     
     return redirect(url_for('index'))
@@ -110,25 +89,38 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
         finalURI = finalURI + data.experiment
     
     if resource_type=="document":
-        finalURI = finalURI + year + "/" + "do" + year[2:3] + random.randrange(0, 1001)
+        title = request.form['doctitle']
+        finalURI = finalURI + "document/" + title
 
     if resource_type=="sensor":
-        finalURI = finalURI + year + "/" + "s" + year[2:3] + random.randrange(0, 1001)
+        year = request.form['year'] 
+        finalURI = finalURI + year + "/se" + year[2:3] + str(random.randrange(0, 1001))
     
     if resource_type=="vector":
-        finalURI = finalURI + year + "/" + "v" + year[2:3] + random.randrange(0, 1001)
+        year = request.form['year'] 
+        finalURI = finalURI + year + "/ve" + year[2:3] + str(random.randrange(0, 1001))
 
     if resource_type=="plant":
-        finalURI = finalURI + year + "/" + project + "/" + "pl" + year[2:]+ "000" + str(random.randrange(0, 1001))
+        year = request.form['year']  
+        project = request.form['relExp']
+        finalURI = finalURI + year + "/" + project + "/pl" + year[2:]+ "000" + str(random.randrange(0, 1001))
     
     if resource_type=="pot":
-        finalURI = finalURI + year + "/" + project + "/" + "pt" + year[2:]+ "000" + str(random.randrange(0, 1001))
+        year = request.form['year']  
+        project = request.form['relExp']
+        finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ "000" + str(random.randrange(0, 1001))
 
     if resource_type=="leaf":
-        finalURI = finalURI + year + "/" + project + "/" + "lf" + year[2:]+ "000" + str(random.randrange(0, 1001))
+        year = request.form['year']  
+        relPlant = request.form['relPlant']
+        project = request.form['relExp']
+        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/lf" + year[2:]+ "000" + str(random.randrange(0, 1001))
 
     if resource_type=="ear":
-        finalURI = finalURI + year + "/" + project + "/" + "ea" + year[2:]+ "000" + str(random.randrange(0, 1001))
+        year = request.form['year']  
+        relPlant = request.form['relPlant']
+        project = request.form['relExp']
+        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ "000" + str(random.randrange(0, 1001))
 
     if resource_type=="person":
         finalURI = finalURI + "/" + data.name 

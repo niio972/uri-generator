@@ -1,0 +1,19 @@
+{% extends "generator.html" %}
+{% block title %}
+Sensor
+{% endblock %}
+{% block content %}
+<form class="installation", method="post"> 
+    <label>Host name</label> <br> 
+    <input type=text name="hostname"  value="opensilex.org"> <br>
+
+    <label>Installation name</label> <br>
+    <input type="text" name="installationName" value="Diaphen"> <br>
+    
+    <label >What year ?</label> <br>
+    <input type="text" name="year" value="2019"> <br>
+    <button type=submit class="btn btn-primary">
+       Generate URI
+    </button>
+ </form>
+{% endblock %}

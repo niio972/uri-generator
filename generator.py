@@ -123,8 +123,8 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(random.randrange(0, 1001)).rjust(6, "0") 
 
     if resource_type=="data":
-            year = request.form['year'] 
-            Ash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-            finalURI = finalURI + year + "/data/" + Ash
+        year = request.form['year'] 
+        Ash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/data/" + Ash
 
     return finalURI

@@ -22,7 +22,7 @@ The generator is using *jinja2* templates, it improves a base template named gen
 {% block title %}
 ```
 
-To make use of this generator for your own instance, you can replace generator.py with your own page (using your own design). 
+To make use of this generator for your own instance, you can replace generator.py with your own page (using your own design).  
 
 For more details about the Flask framework you can see the official documentation [here](https://flask.palletsprojects.com/en/1.1.x/)  
 For details about the VSCode implémentation see [here](https://code.visualstudio.com/docs/python/tutorial-flask)

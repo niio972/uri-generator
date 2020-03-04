@@ -1,0 +1,44 @@
+{% extends "generator.html" %}
+{% block title %}
+Alternative Schema
+{% endblock %}
+{% block content %}
+If the in-built schema do not suit you, you can try to customize yours here.
+
+<table >
+    <tr>
+        <th>Part</th>
+        <th>Content</th>
+        <th>Add/Delete</th>
+    </tr>
+    {% for design in designs %}
+    <tr>
+        <td>  {{ design.name}}    </td>
+        <td>  {{ design.content}}    </td>
+        <td>
+            <a href="">Add</a>
+            <br>
+            <a href="">Delete</a>   
+        </td>  
+    </tr>
+    {% endfor %}
+</table>
+
+<form class="installation", method="post">
+    <label for="content-name">Name</label> <br>
+    <input type=text name="content-name"  value="Country"> <br>
+    <label for="content">Name</label> <br>
+    <input type=text name="content"  value="Persia"> <br>
+      
+    
+   
+   <label for="hostname">Host Name</label> <br>
+   <input type=text name="hostname"  value="opensilex.org"> <br>
+   
+
+
+   <button type=submit class="btn btn-primary">
+      Generate URI
+   </button>
+</form>
+{% endblock %}

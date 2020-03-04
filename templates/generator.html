@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     
-        <title>{% block title %}{% endblock %}</title>
+        <title class='main-title'>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -13,33 +13,27 @@
     </head>
 
     <body>
-      <div class="wrap">
         <div class="container-fluid">
-          <div class="navbar">
+          <div class="navbar dropdown" >
             <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
             <a href="{{ url_for('device') }}" class="navbar-item">Device</a>
             <a href="{{ url_for('scientificObject') }}" class="navbar-item">Scientific Object</a>
             <a href="{{ url_for('document') }}" class="navbar-item">Document</a>
             <a href="{{ url_for('data') }}" class="navbar-item">Data</a>
+            <a href="{{ url_for('method') }}" class="navbar-item">Method</a>
+            <a href="{{url_for('new_schema')}}" class="navbar-item">Alternative Schema</a>
           </div>
-          <div  class="col-md-12">
-            
             <div class="body-content">
               {% block content %}
               {% endblock %}
               <hr/>
             </div>
               {% block success %}
-              {% endblock %}              
-            
-          </div>          
+              {% endblock %}                       
        </div>
         <footer>
           <p>© 2020 - INRAE, UMR Mistea</p>
       </footer>
-    </div>
     </body>
-
-<script href="js/vue.js"></script>
 
 </html>

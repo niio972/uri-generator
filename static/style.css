@@ -1,7 +1,7 @@
 body{
    margin-left:10%;
-   padding:0;
-   font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+   padding: 10px;
+   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
    /* font-size:85%; */
 }
 
@@ -64,10 +64,6 @@ background-color: #337ab7;
 border-color: #2e6da4;
 }
 
-.start{
-  color: antiquewhite;
-  display: block;
-}
 footer {
 	height: 60px;
 	background-color: #f5f5f5;
@@ -116,9 +112,4 @@ h1 {
 .navbar-item {
     font-variant: small-caps;
     margin-left: 30px;
-}
-
-.body-content {
-    padding: 10px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

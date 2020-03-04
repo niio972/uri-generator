@@ -1,18 +1,25 @@
 from flask import render_template, Flask, session, url_for, request, redirect
 from markupsafe import escape
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 import hashlib
 import requests
-import json
-import os
-import mimetypes
-import copy
-import pprint
 import random
-import re
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
+db = SQLAlchemy(app)
+
+class custom_design(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return "<Design %r>" %self.id
+
+#
 @app.route('/home', methods=['GET', 'POST'])
 def home():
 
@@ -63,68 +70,96 @@ def leaf():
 def data():
    return render_template("data.html")
 
+@app.route("/uri/method/")
+def method():
+   return render_template("method.html")
+
 @app.route('/success')
 def success():
     return render_template("success.html")
     #return   'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI'])
 
-@app.route('/uri/<path:subpath>', methods=['GET', 'POST'])
+@app.route('/new_schema')
+def new_schema():
+    if request.method == "POST":
+        content_name = request.form['content-name']
+        content = request.form['content']
+        new_design = custom_design(content = content, name = content_name)
+
+        try:
+            db.session.add(new_design)
+            db.session.commit()
+            return redirect('/')
+
+        except:
+            return "There was an error, try again"
+    else:
+        designs = custom_design.query.order_by(custom_design.id).all()
+        return render_template("new_schema.html", designs = designs)
+
+@app.route('/uri/<path:subpath>', methods = ['GET', 'POST'])
 def execute_request(subpath):
     # show the subpath after /path/
-    session['subpath']=subpath[0:-1]
+    session['subpath'] = subpath[0:-1]
     session['hostname'] = request.form['hostname']
     session['installationName'] = request.form['installationName']       
-    URI = URIgenerator(host= session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
-    session['URI']=URI
+    URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
+    session['URI'] = URI
     
     return redirect(url_for('success'))
     #return 'Creating the folllowing URI %s' % escape(session['URI']) + "for host" + escape(session['hostname'])
 
-
-
+####
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":
         host = host + "/" # Ensure host url ends with a slash
     finalURI = host + installation + "/"
     
-    if resource_type=="document":
+    if resource_type == "document":
         title = request.form['doctitle']
         finalURI = finalURI + "document/" + title
 
-    if resource_type=="sensor":
+    if resource_type == "method":
+        title = request.form['methname']
+        finalURI = finalURI + "method/" + title
+
+    if resource_type == "sensor":
         year = request.form['year'] 
         finalURI = finalURI + year + "/se" + year[2:] + str(random.randrange(0, 1001)).rjust(6, "0")
     
-    if resource_type=="vector":
+    if resource_type == "vector":
         year = request.form['year'] 
         finalURI = finalURI + year + "/ve" + year[2:] + str(random.randrange(0, 1001)).rjust(6, "0")
 
-    if resource_type=="plant":
+    if resource_type == "plant":
         year = request.form['year']  
         project = request.form['relExp']
         finalURI = finalURI + year + "/" + project + "/pl" + year[2:]+ str(random.randrange(0, 1001)).rjust(6, "0")
     
-    if resource_type=="pot":
+    if resource_type == "pot":
         year = request.form['year']  
         project = request.form['relExp']
         finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ str(random.randrange(0, 1001)).rjust(6, "0")
 
-    if resource_type=="leaf":
+    if resource_type == "leaf":
         year = request.form['year']  
         relPlant = request.form['relPlant']
         project = request.form['relExp']
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/lf" + year[2:]+ str(random.randrange(0, 1001)).rjust(6, "0")
 
-    if resource_type=="ear":
+    if resource_type == "ear":
         year = request.form['year']  
         relPlant = request.form['relPlant']
         project = request.form['relExp']
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(random.randrange(0, 1001)).rjust(6, "0") 
 
-    if resource_type=="data":
+    if resource_type == "data":
         year = request.form['year'] 
         Ash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
         finalURI = finalURI + year + "/data/" + Ash
 
     return finalURI
+
+if __name__ == "__main__":
+    app.run(debug=True)

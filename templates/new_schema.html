@@ -4,26 +4,26 @@ Alternative Schema
 {% endblock %}
 {% block content %}
 If the in-built schema do not suit you, you can try to customize yours here.
-
-<table >
-    <tr>
-        <th>Part</th>
-        <th>Content</th>
-        <th>Add/Delete</th>
-    </tr>
-    {% for design in designs %}
-    <tr>
-        <td>  {{ design.name}}    </td>
-        <td>  {{ design.content}}    </td>
-        <td>
-            <a href="">Add</a>
-            <br>
-            <a href="">Delete</a>   
-        </td>  
-    </tr>
-    {% endfor %}
-</table>
-
+<div class=content>
+    <table >
+        <tr>
+            <th>Part</th>
+            <th>Content</th>
+            <th>Add/Delete</th>
+        </tr>
+        {% for design in designs %}
+        <tr>
+            <td>  {{ design.name}}    </td>
+            <td>  {{ design.content}}    </td>
+            <td>
+                <a href="/delete/{{design.id}}">Delete</a>   
+            </td>  
+        </tr>
+        {% endfor %}
+    </table>
+    
+</div>
+<br>
 <form class="installation", method="post">
     <label for="content-name">Name</label> <br>
     <input type=text name="content-name"  value="Country"> <br>
@@ -38,7 +38,7 @@ If the in-built schema do not suit you, you can try to customize yours here.
 
 
    <button type=submit class="btn btn-primary">
-      Generate URI
+      Submit
    </button>
 </form>
 {% endblock %}

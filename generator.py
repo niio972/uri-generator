@@ -15,10 +15,16 @@ class custom_design(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(200), nullable=False)
-
+    
     def __repr__(self):
         return "<Design %r>" %self.id
 
+class collected_URI(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(200), nullable=False)
+    value = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    
 #
 @app.route('/home', methods=['GET', 'POST'])
 def home():
@@ -79,23 +85,35 @@ def success():
     return render_template("success.html")
     #return   'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI'])
 
-@app.route('/new_schema')
+@app.route('/new_schema', methods=['GET', 'POST'])
 def new_schema():
     if request.method == "POST":
         content_name = request.form['content-name']
         content = request.form['content']
+
         new_design = custom_design(content = content, name = content_name)
 
         try:
             db.session.add(new_design)
             db.session.commit()
-            return redirect('/')
+            return redirect('/new_schema')
 
         except:
             return "There was an error, try again"
     else:
-        designs = custom_design.query.order_by(custom_design.id).all()
+        designs = custom_design.query.all()
         return render_template("new_schema.html", designs = designs)
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    task_to_delete = custom_design.query.get_or_404(id)
+
+    try:
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        return redirect('/new_schema')
+    except:
+        return 'There was a problem deleting that row'
 
 @app.route('/uri/<path:subpath>', methods = ['GET', 'POST'])
 def execute_request(subpath):
@@ -106,9 +124,21 @@ def execute_request(subpath):
     URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
     session['URI'] = URI
     
+    your_collection = collected_URI(value = URI, type = session['subpath'])
+
+    try:
+        db.session.add(your_collection)
+        db.session.commit()
+
+    except:
+        return "There was an error, try again"
     return redirect(url_for('success'))
     #return 'Creating the folllowing URI %s' % escape(session['URI']) + "for host" + escape(session['hostname'])
 
+@app.route("/your_collection")
+def your_collection():
+    collection = your_collection.query.all()
+    return redirect(url_for("your_collection.html"), collection=collection)
 ####
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):

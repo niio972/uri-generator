@@ -1,0 +1,16 @@
+{% extends "generator.html" %}
+{% block title %}
+your collection
+{% endblock %}
+{% block content %}
+<table>
+    <tr>
+        <th>Type</th>
+        <th>URI</th>
+    </tr>
+    <tr>
+        <td>{{ collection.type}}</td>
+        <td>{{collection.value}}</td>
+    </tr>
+</table>
+{% endblock %}

@@ -24,11 +24,13 @@ class collected_URI(db.Model):
     type = db.Column(db.String(200), nullable=False)
     value = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
+    def __repr__(self):
+        return "<URI %r>" %self.id
+
 #
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-
     return render_template('home.html')
 
 @app.route("/device")
@@ -92,7 +94,6 @@ def new_schema():
         content = request.form['content']
 
         new_design = custom_design(content = content, name = content_name)
-
         try:
             db.session.add(new_design)
             db.session.commit()
@@ -104,16 +105,26 @@ def new_schema():
         designs = custom_design.query.all()
         return render_template("new_schema.html", designs = designs)
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    task_to_delete = custom_design.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        return redirect('/new_schema')
-    except:
-        return 'There was a problem deleting that row'
+@app.route('/delete/<path:subpath>/<int:id>')
+def delete(id, subpath):
+    if subpath == "URI":
+        URI_to_delete = collected_URI.query.get_or_404(id)
+        try:
+            db.session.delete(URI_to_delete)
+            db.session.commit()
+            return redirect('/your_collection')
+        except:
+            return 'There was a problem deleting that row'
+        
+    
+    else:
+        task_to_delete = custom_design.query.get_or_404(id)
+        try:
+            db.session.delete(task_to_delete)
+            db.session.commit()
+            return redirect('/new_schema')
+        except:
+            return 'There was a problem deleting that row'
 
 @app.route('/uri/<path:subpath>', methods = ['GET', 'POST'])
 def execute_request(subpath):
@@ -124,8 +135,7 @@ def execute_request(subpath):
     URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
     session['URI'] = URI
     
-    your_collection = collected_URI(value = URI, type = session['subpath'])
-
+    your_collection = collected_URI(value = URI, type = subpath[0:-1])
     try:
         db.session.add(your_collection)
         db.session.commit()
@@ -137,8 +147,8 @@ def execute_request(subpath):
 
 @app.route("/your_collection")
 def your_collection():
-    collection = your_collection.query.all()
-    return redirect(url_for("your_collection.html"), collection=collection)
+    collections = collected_URI.query.all()
+    return render_template("your_collection.html", collections=collections)
 ####
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):

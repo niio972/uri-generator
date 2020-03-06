@@ -4,12 +4,12 @@ Alternative Schema
 {% endblock %}
 {% block content %}
 If the in-built schema do not suit you, you can try to customize yours here.
-<div class=content>
-    <table >
+<div >
+    <table class=content>
         <tr>
             <th>Part</th>
             <th>Content</th>
-            <th>Add/Delete</th>
+            <th>Action</th>
         </tr>
         {% for design in designs %}
         <tr>
@@ -20,22 +20,33 @@ If the in-built schema do not suit you, you can try to customize yours here.
             </td>  
         </tr>
         {% endfor %}
+
+        <tr>
+            <td>
+                Key
+            </td>
+            <td>
+                 [[key_class]] {{ key}}
+            </td>
+            <td>
+                    <select name="key_class" id="key_class" v-model="key_class">
+                        <option value="incremental" selected>Incremental</option>
+                        <option value="random">Random</option>
+                        <option value="crypto">Cryptographic</option>
+                    </select>
+            </td>
+            
+        </tr>
     </table>
     
+    <p>  {{ URI }}</p>
 </div>
 <br>
-<form class="installation", method="post">
+<form class="installation" method="post">
     <label for="content-name">Name</label> <br>
     <input type=text name="content-name"  value="Country"> <br>
-    <label for="content">Name</label> <br>
-    <input type=text name="content"  value="Persia"> <br>
-      
-    
-   
-   <label for="hostname">Host Name</label> <br>
-   <input type=text name="hostname"  value="opensilex.org"> <br>
-   
-
+    <label for="content">Value</label> <br>
+    <input type=text name="content"  value="Persia"> <br> 
 
    <button type=submit class="btn btn-primary">
       Submit

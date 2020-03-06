@@ -1,14 +1,19 @@
-from flask import render_template, Flask, session, url_for, request, redirect
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify
 from markupsafe import escape
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import hashlib
 import requests
 import random
+import pandas as pd
+#import csv
+
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
+CORS(app, resources={r'/*': {'origins': '*'}})
 db = SQLAlchemy(app)
 
 class custom_design(db.Model):
@@ -103,7 +108,10 @@ def new_schema():
             return "There was an error, try again"
     else:
         designs = custom_design.query.all()
-        return render_template("new_schema.html", designs = designs)
+        key_class = request.form.get('key_class')
+        key = key_generator(key_class=key_class)
+        #return(str(key_class))
+        return render_template("new_schema.html", designs = designs, key = key)
 
 @app.route('/delete/<path:subpath>/<int:id>')
 def delete(id, subpath):
@@ -200,6 +208,36 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
         finalURI = finalURI + year + "/data/" + Ash
 
     return finalURI
+
+def key_generator(key_class):
+    if key_class=="incremental":
+        return "001"
+    if key_class=="random":
+        return str(random.randrange(0, 1001)).rjust(6, "0")
+    if key_class=="crypto":
+        return hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+
+def read_multiple_URI(file):
+    #read the file
+    URI_table = pd.read_csv (file)
+    for line in URI_table:
+        host = session['hostname']
+        installation = session['installationName']
+        line_type = session['subpath']
+        line_year = line.year        
+        
+        URIgenerator(host = host, installation = installation, resource_type=line_type, )
+
+def export_csv(table):
+    csv_table = pd.to_csv(table)
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

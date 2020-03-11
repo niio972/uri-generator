@@ -9,8 +9,6 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
-<!--         <link rel="stylesheet" href="{{ url_for('static', filename='js/vue.js')}}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='js/appVue.js')}}"> -->
     </head>
 
     <body>
@@ -22,8 +20,8 @@
             <a href="{{ url_for('document') }}" class="navbar-item">Document</a>
             <a href="{{ url_for('data') }}" class="navbar-item">Data</a>
             <a href="{{ url_for('method') }}" class="navbar-item">Method</a>
-            <a href="{{url_for('new_schema')}}" class="navbar-item">Alternative Schema</a>
-            <a href="{{url_for('your_collection')}}" class="navbar-item">Your collection</a>
+            <a href="{{ url_for('new_schema')}}" class="navbar-item">Alternative Schema</a>
+            <a href="{{ url_for('your_collection')}}" class="navbar-item">Your collection</a>
           </div>
             <div class="body-content" id=URI_generator>
               {% block content %}

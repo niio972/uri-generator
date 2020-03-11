@@ -1,4 +1,4 @@
-from flask import render_template, Flask, session, url_for, request, redirect, jsonify
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file
 from markupsafe import escape
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -22,16 +22,18 @@ class custom_design(db.Model):
     content = db.Column(db.String(200), nullable=False)
     
     def __repr__(self):
-        return "<Design %r>" %self.id
+        return "Design %r" %self.id
 
 class collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(200), nullable=False)
     value = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
+    
+    def __init__(self, candid=None, rank=None, user_id=None):
+        self.data = (type, value, id)
     def __repr__(self):
-        return "<URI %r>" %self.id
+        return "URI %r" %self.id
 
 #
 @app.route('/home', methods=['GET', 'POST'])
@@ -94,23 +96,19 @@ def success():
 
 @app.route('/new_schema', methods=['GET', 'POST'])
 def new_schema():
-    if request.method == "POST":
+    key = key_generator()
+    designs = custom_design.query.all()
+    if request.method == "POST" and 'content-name' in request.form:
         content_name = request.form['content-name']
         content = request.form['content']
-
         new_design = custom_design(content = content, name = content_name)
         try:
             db.session.add(new_design)
             db.session.commit()
-            return redirect('/new_schema')
-
         except:
             return "There was an error, try again"
+        return redirect("/new_schema")
     else:
-        designs = custom_design.query.all()
-        key_class = request.form.get('key_class')
-        key = key_generator(key_class=key_class)
-        #return(str(key_class))
         return render_template("new_schema.html", designs = designs, key = key)
 
 @app.route('/delete/<path:subpath>/<int:id>')
@@ -157,7 +155,18 @@ def execute_request(subpath):
 def your_collection():
     collections = collected_URI.query.all()
     return render_template("your_collection.html", collections=collections)
+@app.route("/export_csv")
+def export_csv():
+    table = collected_URI.query.all()
+                    
+    pd.DataFrame([(d.type, d.value, d.id) for d in table], 
+                  columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
+    return redirect("/your_collection")
 ####
+
+@app.route('/download/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    return send_file(filename)
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":
@@ -209,7 +218,8 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
 
     return finalURI
 
-def key_generator(key_class):
+def key_generator():
+    key_class = request.form.get('key_class')
     if key_class=="incremental":
         return "001"
     if key_class=="random":
@@ -228,8 +238,6 @@ def read_multiple_URI(file):
         
         URIgenerator(host = host, installation = installation, resource_type=line_type, )
 
-def export_csv(table):
-    csv_table = pd.to_csv(table)
 
 
 

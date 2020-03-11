@@ -16,8 +16,12 @@ your collection
     <tr>
         <td>{{collection.type}}</td>
         <td>{{collection.value}}</td>
-        <td> <a href="/delete/URI/{{collection.id}}">Delete</a>    </td>
+        <td> <a href="/delete/URI/{{collection.id}}">Delete</a>  </td>
     </tr>
     {% endfor %}
 </table>
+
+<a href="/export_csv">Write CSV </a>
+
+<button  class="btn"><a href="{{url_for('download', filename='export_URI.csv')}}" download=exportURI>  Download</button>
 {% endblock %}

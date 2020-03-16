@@ -30,10 +30,11 @@ class collected_URI(db.Model):
     value = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     
-    def __init__(self, candid=None, rank=None, user_id=None):
-        self.data = (type, value, id)
     def __repr__(self):
         return "URI %r" %self.id
+    """ def __init__(self, candid=None, rank=None, user_id=None):
+        self.data = (type, value, id) """
+    
 
 #
 @app.route('/home', methods=['GET', 'POST'])
@@ -162,9 +163,9 @@ def export_csv():
     return redirect("/your_collection")
 ####
 
-@app.route('/download/<path:filename>')
+@app.route('/data/<path:filename>')
 def download(filename):
-    return send_file(filename_or_fp="download/"+filename)
+    return send_file("download/"+filename)
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":

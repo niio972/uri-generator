@@ -158,15 +158,13 @@ def your_collection():
 @app.route("/export_csv")
 def export_csv():
     table = collected_URI.query.all()
-                    
-    pd.DataFrame([(d.type, d.value, d.id) for d in table], 
-                  columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
+    pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
     return redirect("/your_collection")
 ####
 
-@app.route('/download/<path:filename>', methods=['GET', 'POST'])
+@app.route('/download/<path:filename>')
 def download(filename):
-    return send_file(filename)
+    return send_file(filename_or_fp="download/"+filename)
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":

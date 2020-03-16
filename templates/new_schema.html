@@ -3,9 +3,12 @@
 Alternative Schema
 {% endblock %}
 {% block content %}
-If the in-built schema do not suit you, you can try to customize yours here.
+<h2>Build a URI design</h2>
+<p>If the in-built schema do not suit you, you can try to customize yours here. </p>
+<p>You can add some elements of the URI by adding lines to this table. <br>
+     Once you have filled all the informations needed, you can generate a sample URI to see if your design suits you.</p>
 <div >
-    <table class=content>
+    <table class=content id=mytable v-on:load="GetCellValues" >
         <tr>
             <th>Part</th>
             <th>Content</th>
@@ -14,7 +17,7 @@ If the in-built schema do not suit you, you can try to customize yours here.
         {% for design in designs %}
         <tr>
             <td>  {{ design.name}}    </td>
-            <td>  {{ design.content}}    </td>
+            <td id="segments{{design.id}}">  {{ design.content}}    </td>
             <td>
                 <a href="/delete/design/{{design.id}}">Delete</a>   
             </td>  
@@ -25,7 +28,7 @@ If the in-built schema do not suit you, you can try to customize yours here.
             <td>
                 Key
             </td>
-            <td>
+            <td id=segment_key>
                 {{ key }}
             </td>
             <td>
@@ -41,8 +44,10 @@ If the in-built schema do not suit you, you can try to customize yours here.
             
         </tr>
     </table>
-    
-    <p>  {{ URI }}</p>
+    <button class="btn btn-primary" v-on:click="GetCellValues">fill URI</button>
+    <p>
+        <b>  [[ fill_URI ]]</b>
+    </p>
 </div>
 <br>
 <form class="installation" method="POST">

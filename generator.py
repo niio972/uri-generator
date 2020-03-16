@@ -156,16 +156,12 @@ def execute_request(subpath):
 def your_collection():
     collections = collected_URI.query.all()
     return render_template("your_collection.html", collections=collections)
-@app.route("/export_csv")
-def export_csv():
-    table = collected_URI.query.all()
-    pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
-    return redirect("/your_collection")
-####
 
 @app.route('/data/<path:filename>')
 def download(filename):
-    return send_file("download/"+filename)
+    table = collected_URI.query.all()
+    pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
+    return send_file("download/"+filename+".csv")
 
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":

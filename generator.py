@@ -212,7 +212,7 @@ def download(filename):
         table = collected_URI.query.all()
         pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
         return send_file("download/"+filename+".csv")
-    if filename == "export_Variable":
+    if filename == "export_variable":
         table = collected_variables.query.all()
         pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
         return send_file("download/"+filename+".csv")

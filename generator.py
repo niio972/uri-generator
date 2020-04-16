@@ -7,8 +7,6 @@ import hashlib
 import requests
 import random
 import pandas as pd
-#import csv
-
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -16,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 CORS(app, resources={r'/*': {'origins': '*'}})
 db = SQLAlchemy(app)
 
+### Models
 class custom_design(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
@@ -46,7 +45,7 @@ class collected_variables(db.Model):
 
     def __repr__(self):
         return "Variable %r" %self.id
-#
+### Menu
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     return render_template('home.html')
@@ -63,7 +62,7 @@ def device():
 def scientificObject():
     return render_template("scientificObject.html")
 
-#####
+### Generation
 @app.route("/uri/experiment")
 def experiment():
     return render_template("experiment.html")
@@ -104,24 +103,27 @@ def data():
 def method():
    return render_template("method.html")
 
+### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
 def create_variable():
-    if request.methods == "POST":
+    if request.method == "POST":
         session['Entity'] = request.form['Entity']
         session['Quality'] = request.form['Quality']       
         session['Method'] = request.form['Method']  
         session['Unit'] = request.form['Unit']  
+        session['subpath'] = "variable"
         URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type="variable")
         session['URI'] = URI
         
-        your_collection = collected_variables(URI = URI, Entity = session['Entity'], Quality=session['Quality'], Method = session['Method'], Unit = session['Unit'])
+        your_variables = collected_variables(URI = URI, Entity = session['Entity'], Quality=session['Quality'], Method = session['Method'], Unit = session['Unit'])
         try:
-            db.session.add(your_collection)
+            db.session.add(your_variables)
             db.session.commit()
-
+        except:
+            return "There was an error, try again"
+        return redirect(url_for('success'))
     else:
         return render_template("create_variable.html")
-
 
 @app.route('/success')
 def success():
@@ -155,7 +157,16 @@ def delete(id, subpath):
             return redirect('/your_collection')
         except:
             return 'There was a problem deleting that row'
-        
+
+    if subpath =="variable":
+        variable_to_delete = collected_variables.query.get_or_404(id)
+        try:
+            db.session.delete(variable_to_delete)
+            db.session.commit()
+            return redirect('/your_variables')
+        except:
+            return 'There was a problem deleting that variable'
+            
     
     else:
         task_to_delete = custom_design.query.get_or_404(id)
@@ -195,13 +206,18 @@ def your_variables():
     variables = collected_variables.query.all()
     return render_template("your_variables.html", variables=variables)
 
-
 @app.route('/data/<path:filename>')
 def download(filename):
-    table = collected_URI.query.all()
-    pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
-    return send_file("download/"+filename+".csv")
+    if filename == "export_URI":
+        table = collected_URI.query.all()
+        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
+        return send_file("download/"+filename+".csv")
+    if filename == "export_Variable":
+        table = collected_variables.query.all()
+        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
+        return send_file("download/"+filename+".csv")
 
+### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
     if host[-1] != "/":
         host = host + "/" # Ensure host url ends with a slash
@@ -221,7 +237,7 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
         Method = session['Method'] = request.form['Method']  
         Unit = session['Unit'] = request.form['Unit'] 
         title_base = Entity+"_"+Quality
-        if Method != "Empty":
+        if Method != "empty":
             title = title_base+"_"+Method+"_"+Unit
         else :
             title = title_base+"_"+Unit

@@ -90,7 +90,14 @@ h1 {
     width: 25%;
     height: 25%;
 }
-
+.create_var{
+  background-color: #f2fff0;
+    font-size: 1.2em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding: 10px 8px 10px 8px;
+    width: 50%;
+    height: 50%;
+}
 .navbar {
     background-color: #7dc383;
     font-size: 1.2em;

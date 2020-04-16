@@ -1,0 +1,73 @@
+{% extends "generator.html" %}
+{% block title %}
+Create Variable
+{% endblock %}
+{% block content %}
+<form class="create_var", method="post">
+    <div>
+    <label for="Entity">Entity</label> 
+    <select name="Entity" id="Entity">
+            <option value="air">Air</option>
+            <option value="soil">Soil</option>
+            <option value="plant">Plant</option>
+            <option value="plot">Plot</option>
+            <option value="cropCanopy">Crop canopy</option>
+            <option value="leaf">Leaf</option>
+            <option value="stem">Stem</option>
+            <option value="root">Root</option>
+            <option value="ear">Ear</option>
+            <option value="entity_Less">Entity Less</option>
+    </select> 
+    </div>
+   
+   <div>
+    <label for="Quality">Quality</label>  
+    <select name="Quality" id="Quality" label="Quality">
+         <option value="temperature">Temperature</option>
+         <option value="mass">Mass</option>
+         <option value="time">Time</option>
+         <option value="gdd">Growth Degree Day</option>
+         <option value="lai">LAI</option>
+         <option value="NDVI">NDVI</option>
+         <option value="conductivity_of_matter">Conductivity of matter</option>
+         <option value="yield"> Yield</option>
+         <option value="height">Height</option>
+         <option value="pressure">Pressure</option>
+         <option value="quality_Less">Quality Less</option>
+    </select> 
+   </div>
+
+   <div>
+       <label for="Method">Method</label> 
+        <select name="Method" id="Method">
+            <option value="empty">Empty</option>
+            <option value="imaging">Imaging</option>
+            <option value="computation">Computation</option>
+            <option value="sensor">Sensor</option>
+            <option value="model"> Model</option>
+            <option value="average">Average</option>
+            <option value="maximum">Maximum</option>
+            <option value="manual">Manual</option>
+        </select>
+   </div>
+    
+   <div>
+    <label for="Unit"> Unit</label>
+    <select name="Unit" id="Unit">
+        <option value="unit_less">Unit_Less</option>
+        <option value="kg">kg</option>
+        <option value="m">m</option>
+        <option value="day">day</option>
+        <option value="dgree_celcius">°C</option>
+        <option value="kg.ha-1">kg.ha-1</option>
+        <option value="n.m-2.s-1">n.m-2.s-1</option>
+        <option value="index">Index</option>
+        <option value="unit_less">Unit Less</option>
+    </select>
+   </div>
+    <br>
+   <button type=submit class="btn btn-primary">
+      Generate Variable
+   </button>
+</form>
+{% endblock %}

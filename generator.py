@@ -35,12 +35,26 @@ class collected_URI(db.Model):
     """ def __init__(self, candid=None, rank=None, user_id=None):
         self.data = (type, value, id) """
     
+class collected_variables(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    URI = db.Column(db.String(200), nullable=False)
+    Entity = db.Column(db.String(50), nullable=False)
+    Quality = db.Column(db.String(50), nullable=False)
+    Method = db.Column(db.String(50), nullable=False)
+    Unit = db.Column(db.String(50), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __repr__(self):
+        return "Variable %r" %self.id
 #
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     return render_template('home.html')
 
+@app.route("/variable/")
+def variable():
+        return render_template("variable.html")
+    
 @app.route("/device")
 def device():
     return render_template("device.html")
@@ -89,6 +103,25 @@ def data():
 @app.route("/uri/method/")
 def method():
    return render_template("method.html")
+
+@app.route("/create_variable/", methods=['GET', 'POST'])
+def create_variable():
+    if request.methods == "POST":
+        session['Entity'] = request.form['Entity']
+        session['Quality'] = request.form['Quality']       
+        session['Method'] = request.form['Method']  
+        session['Unit'] = request.form['Unit']  
+        URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type="variable")
+        session['URI'] = URI
+        
+        your_collection = collected_variables(URI = URI, Entity = session['Entity'], Quality=session['Quality'], Method = session['Method'], Unit = session['Unit'])
+        try:
+            db.session.add(your_collection)
+            db.session.commit()
+
+    else:
+        return render_template("create_variable.html")
+
 
 @app.route('/success')
 def success():
@@ -157,6 +190,12 @@ def your_collection():
     collections = collected_URI.query.all()
     return render_template("your_collection.html", collections=collections)
 
+@app.route("/your_variables")
+def your_variables():
+    variables = collected_variables.query.all()
+    return render_template("your_variables.html", variables=variables)
+
+
 @app.route('/data/<path:filename>')
 def download(filename):
     table = collected_URI.query.all()
@@ -175,6 +214,18 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
     if resource_type == "method":
         title = request.form['methname']
         finalURI = finalURI + "method/" + title
+
+    if resource_type == "variable":
+        Entity = session['Entity'] = request.form['Entity']
+        Quality = session['Quality'] = request.form['Quality']       
+        Method = session['Method'] = request.form['Method']  
+        Unit = session['Unit'] = request.form['Unit'] 
+        title_base = Entity+"_"+Quality
+        if Method != "Empty":
+            title = title_base+"_"+Method+"_"+Unit
+        else :
+            title = title_base+"_"+Unit
+        finalURI = finalURI + "variable/" + title
 
     if resource_type == "sensor":
         year = request.form['year'] 

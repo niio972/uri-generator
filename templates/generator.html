@@ -23,6 +23,11 @@
             <a href="{{ url_for('new_schema')}}" class="navbar-item">Alternative Schema</a>
             <a href="{{ url_for('your_collection')}}" class="navbar-item">Your collection</a>
           </div>
+          <div class="navbar dropdown">
+            <a href="{{ url_for('variable') }}" class="navbar-brand">Variable pattern</a>
+            <a href="{{ url_for('create_variable') }}" class="navbar-item">Create variables</a>
+            <a href="{{ url_for('your_variables')}}" class="navbar-item">Your variables</a>
+          </div>
             <div class="body-content" id=URI_generator>
               {% block content %}
               {% endblock %}
@@ -32,7 +37,7 @@
               {% endblock %}                       
        </div>
         <footer>
-          <p>© 2020 - INRAE, UMR Mistea</p>
+          <p>© 2020 - INRAE, UMR Mistea - EPPN2020</p>
       </footer>
       <script src="static/js/vue.js"></script>
       <script src="static/js/appVue.js"></script>

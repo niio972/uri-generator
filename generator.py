@@ -11,7 +11,7 @@ import pandas as pd
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
-CORS(app, resources={r'/*': {'origins': '*'}})
+""" CORS(app, resources={r'/*': {'origins': '*'}}) """
 db = SQLAlchemy(app)
 
 ### Models

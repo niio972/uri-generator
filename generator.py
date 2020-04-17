@@ -46,7 +46,7 @@ class collected_variables(db.Model):
     def __repr__(self):
         return "Variable %r" %self.id
 ### Menu
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('home.html')
 

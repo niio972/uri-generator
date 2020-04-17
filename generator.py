@@ -299,15 +299,3 @@ def read_multiple_URI(file):
         line_year = line.year        
         
         URIgenerator(host = host, installation = installation, resource_type=line_type, )
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

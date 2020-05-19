@@ -385,33 +385,33 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 data = pd.read_csv('ao_mau17.csv', sep=";") 
 # generate lots of URI
 #init dbs
-initm3p1=m3p_collected_URI(type="plant")
-db.session.add(initm3p1)
-db.session.commit()
+# initm3p1=m3p_collected_URI(type="plant")
+# db.session.add(initm3p1)
+# db.session.commit()
 
-initm3p2=m3p_collected_URI(type="plot")
-db.session.add(initm3p2)
-db.session.commit()
+# initm3p2=m3p_collected_URI(type="plot")
+# db.session.add(initm3p2)
+# db.session.commit()
         
-initm3p3=m3p_collected_URI(type="pot")
-db.session.add(initm3p3)
-db.session.commit()
+# initm3p3=m3p_collected_URI(type="pot")
+# db.session.add(initm3p3)
+# db.session.commit()
 
-initm3p4=m3p_collected_URI(type="ear")
-db.session.add(initm3p4)
-db.session.commit()
+# initm3p4=m3p_collected_URI(type="ear")
+# db.session.add(initm3p4)
+# db.session.commit()
 
-initm3p5=m3p_collected_URI(type="leaf")
-db.session.add(initm3p5)
-db.session.commit()
+# initm3p5=m3p_collected_URI(type="leaf")
+# db.session.add(initm3p5)
+# db.session.commit()
 
-initm3p6=m3p_collected_URI(type="sensor")
-db.session.add(initm3p6)
-db.session.commit()
+# initm3p6=m3p_collected_URI(type="sensor")
+# db.session.add(initm3p6)
+# db.session.commit()
 
-initm3p7=m3p_collected_URI(type="vector")
-db.session.add(initm3p7)
-db.session.commit()
+# initm3p7=m3p_collected_URI(type="vector")
+# db.session.add(initm3p7)
+# db.session.commit()
 
 if __name__=="__main__":
     app.run(debug=True)

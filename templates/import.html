@@ -1,0 +1,30 @@
+{% extends "generator.html" %}
+{% block title %}
+Import dataset
+{% endblock %}
+{% block content %}
+<form class="installation", method="post">
+   <label for="hostname">Host Name</label> <br>
+   <input type=text name="hostname"  value="your_institution"> <br>
+   <label>Installation name</label> <br>
+   <input type=text name="installation"  value="your installation"> <br>
+   
+   <form action="upload.html" method="post" enctype="multipart/form-data">
+   <input type="file" name="fileupload" id="fileToUpload">
+   <input type="submit" value="Upload File" name="submit">
+   </form>
+   
+   <select name="resource_Type" id="resource_type">
+       <option value="lire le csv">lire le csv</option>
+   
+    </select>
+
+    Reuse ID
+    What ID ?
+
+
+   <button type=submit class="btn btn-primary">
+      Generate URI
+   </button>
+</form>
+{% endblock %}

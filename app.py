@@ -34,6 +34,13 @@ class collected_URI(db.Model):
     """ def __init__(self, candid=None, rank=None, user_id=None):
         self.data = (type, value, id) """
     
+class m3p_collected_URI(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(200), nullable=False)
+    lastvalue = db.Column(db.String(200), nullable=False, default=1)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class collected_variables(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     URI = db.Column(db.String(200), nullable=False)
@@ -201,6 +208,11 @@ def your_collection():
     collections = collected_URI.query.all()
     return render_template("your_collection.html", collections=collections)
 
+@app.route("/your_database")
+def your_database():
+    collections = m3p_collected_URI.query.all()
+    return render_template("your_database.html", collections=collections)
+
 @app.route("/your_variables")
 def your_variables():
     variables = collected_variables.query.all()
@@ -216,6 +228,25 @@ def download(filename):
         table = collected_variables.query.all()
         pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
         return send_file("download/"+filename+".csv")
+
+@app.route('/import',methods = ['POST'])
+def upload_route_summary():
+    if request.method == 'POST':
+
+        # Create variable for uploaded file
+        f = request.files['fileupload']  
+
+        #store the file contents as a string
+        fstring = f.read()
+        
+        #avec pandas
+        dataset = pd.read_csv()
+
+        #create list of dictionaries keyed by header row
+        #csv_dicts = [{k: v for k, v in row.items()} for row in csv.DictReader(fstring.splitlines(), skipinitialspace=True)]
+
+        #do something list of dictionaries
+    return "success"
 
 ### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
@@ -275,8 +306,8 @@ def URIgenerator(host, installation, resource_type, year="", project="", data={}
 
     if resource_type == "data":
         year = request.form['year'] 
-        Ash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + year + "/data/" + Ash
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/data/" + Hash
 
     return finalURI
 
@@ -299,3 +330,82 @@ def read_multiple_URI(file):
         line_year = line.year        
         
         URIgenerator(host = host, installation = installation, resource_type=line_type, )
+
+def URIgenerator_series(host, installation, resource_type, year="", lastvalue = "001", project="", data={}):
+    if host[-1] != "/":
+        host = host + "/" # Ensure host url ends with a slash
+    finalURI = host + installation + "/"
+
+    if resource_type == "sensor":
+        finalURI = finalURI + year + "/se" + year[2:] + str(lastvalue).rjust(6, "0")
+    
+    if resource_type == "vector":
+        finalURI = finalURI + year + "/ve" + year[2:] + str(lastvalue).rjust(6, "0")
+
+    if resource_type == "plant":
+        finalURI = finalURI + year + "/" + project + "/pl" + year[2:]+ str(lastvalue).rjust(6, "0")
+    
+    if resource_type == "pot":
+        finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ str(lastvalue).rjust(6, "0")
+
+    if resource_type == "leaf":
+        relPlant = data.relPlant
+        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/lf" + year[2:]+ str(lastvalue).rjust(6, "0")
+
+    if resource_type == "ear":
+        relPlant = data.relPlant
+        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(lastvalue).rjust(6, "0") 
+
+    if resource_type == "data":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/data/" + Hash
+
+    return finalURI
+
+
+def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "" ):
+    activeDB = m3p_collected_URI.query.filter(type == resource_type)
+    datURI = []
+    for l in range(0,len(data)):
+        #query lastvalue
+        lastplant = activeDB.lastvalue
+        datURI.append(URIgenerator_series(host = "opensilex.org", installation = "m3p", year = "2017", resource_type="plant", project = "DIA2017", lastvalue = lastplant))
+        #update lastvalue
+        lastplant +=1
+    session.query().filter(type == resource_type).update({"lastvalue": (lastplant)})
+    session.commit()
+
+    data = data.assign(URI = datURI)
+
+
+data = pd.read_csv('ao_mau17.csv', sep=";") 
+# generate lots of URI
+#init dbs
+initm3p1=m3p_collected_URI(type="plant")
+db.session.add(initm3p1)
+db.session.commit()
+
+initm3p2=m3p_collected_URI(type="plot")
+db.session.add(initm3p2)
+db.session.commit()
+        
+initm3p3=m3p_collected_URI(type="pot")
+db.session.add(initm3p3)
+db.session.commit()
+
+initm3p4=m3p_collected_URI(type="ear")
+db.session.add(initm3p4)
+db.session.commit()
+
+initm3p5=m3p_collected_URI(type="leaf")
+db.session.add(initm3p5)
+db.session.commit()
+
+initm3p6=m3p_collected_URI(type="sensor")
+db.session.add(initm3p6)
+db.session.commit()
+
+initm3p7=m3p_collected_URI(type="vector")
+db.session.add(initm3p7)
+db.session.commit()
+

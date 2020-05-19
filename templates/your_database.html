@@ -1,0 +1,21 @@
+{% extends "generator.html" %}
+{% block title %}
+your database
+{% endblock %}
+{% block content %}
+<h2>Here is a summary of the different URI you created</h2>
+
+<table class=content>
+    <tr>
+        <th>Type</th>
+        <th>lastURI</th>
+    </tr>
+    {% for collection in collections %}
+    <tr>
+        <td>{{collection.type}}</td>
+        <td>{{collection.lastvalue}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

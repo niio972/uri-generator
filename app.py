@@ -110,6 +110,10 @@ def data():
 def method():
    return render_template("method.html")
 
+@app.route("/import_dataset")
+def import_dataset():
+   return render_template("import.html")
+
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
 def create_variable():
@@ -409,3 +413,5 @@ initm3p7=m3p_collected_URI(type="vector")
 db.session.add(initm3p7)
 db.session.commit()
 
+if __name__=="__main__":
+    app.run(debug=True)

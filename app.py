@@ -52,6 +52,7 @@ class collected_variables(db.Model):
 
     def __repr__(self):
         return "Variable %r" %self.id
+
 ### Menu
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -59,7 +60,7 @@ def home():
 
 @app.route("/variable/")
 def variable():
-        return render_template("variable.html")
+    return render_template("variable.html")
     
 @app.route("/device")
 def device():
@@ -367,22 +368,25 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
     return finalURI
 
 
-def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "" ):
-    activeDB = m3p_collected_URI.query.filter(type == resource_type)
+def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017" ):
+    activeDB = m3p_collected_URI.query.filter_by(type = resource_type).first()
     datURI = []
+    lastplant = int(activeDB.lastvalue)
     for l in range(0,len(data)):
-        #query lastvalue
-        lastplant = activeDB.lastvalue
-        datURI.append(URIgenerator_series(host = "opensilex.org", installation = "m3p", year = "2017", resource_type="plant", project = "DIA2017", lastvalue = lastplant))
-        #update lastvalue
+        datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
         lastplant +=1
-    session.query().filter(type == resource_type).update({"lastvalue": (lastplant)})
-    session.commit()
+    activeDB.lastvalue = str(lastplant)
+    db.session.commit()
 
     data = data.assign(URI = datURI)
+    return data
 
 
-data = pd.read_csv('ao_mau17.csv', sep=";") 
+data = pd.read_csv('ao_mau17.csv', sep=";")
+
+lastv = '2'
+URIgenerator_series(host = "opensilec", installation = "M2P", year = "2019", resource_type="plant", project = "DIA2017", lastvalue = lastv)
+add_URI_col(data = data, host = 'opensilex.org', installation='M3P', year = '2017', resource_type='plant', project='DIA2017')
 # generate lots of URI
 #init dbs
 # initm3p1=m3p_collected_URI(type="plant")

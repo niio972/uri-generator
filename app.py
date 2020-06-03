@@ -336,10 +336,45 @@ def read_multiple_URI(file):
         
         URIgenerator(host = host, installation = installation, resource_type=line_type, )
 
-def URIgenerator_series(host, installation, resource_type, year="", lastvalue = "001", project="", data={}):
+def URIgenerator_series(host, installation, resource_type, year="", lastvalue = "001", project="", datasup = {} ):
     if host[-1] != "/":
         host = host + "/" # Ensure host url ends with a slash
     finalURI = host + installation + "/"
+
+    # cas où local infra existe ou pas
+    if resource_type == "installation":
+        finalURI = finalURI  
+
+    if resource_type == "infra":
+        finalURI = finalURI
+
+    if resource_type == "projet":
+        finalURI = finalURI + project
+
+    if resource_type == "experiment":
+        finalURI = finalURI + experiment
+
+    if resource_type == "species":
+        finalURI = finalURI + datasup['species']
+
+    if resource_type == "event":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + "id/event/" + Hash
+
+    if resource_type == "agent":
+        finalURI = finalURI + "id/agent/" + datasup["agentName"]
+    
+    if resource_type == "annotation":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + "id/annotation/" + Hash
+
+    if resource_type == "actuator":
+      finalURI = finalURI + year + "/a" + year[2:]+ str(lastvalue).rjust(6, "0")
+    
+    if resource_type == "document":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + "documents/document" + Hash
+
 
     if resource_type == "sensor":
         finalURI = finalURI + year + "/se" + year[2:] + str(lastvalue).rjust(6, "0")
@@ -354,29 +389,37 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ str(lastvalue).rjust(6, "0")
 
     if resource_type == "leaf":
-        relPlant = data.relPlant
+        relPlant = datasup['relPlant']
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/lf" + year[2:]+ str(lastvalue).rjust(6, "0")
 
     if resource_type == "ear":
-        relPlant = data.relPlant
+        relPlant = datasup['relPlant']
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(lastvalue).rjust(6, "0") 
 
     if resource_type == "data":
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
         finalURI = finalURI + year + "/data/" + Hash
-
+    
+    if resource_type == "image":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/image/" + Hash
     return finalURI
 
 
-def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017" ):
+def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
     activeDB = m3p_collected_URI.query.filter_by(type = resource_type).first()
     datURI = []
-    lastplant = int(activeDB.lastvalue)
-    for l in range(0,len(data)):
-        datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
-        lastplant +=1
-    activeDB.lastvalue = str(lastplant)
-    db.session.commit()
+    if(resource_type!='data'):
+        lastplant = int(activeDB.lastvalue)
+        for l in range(0,len(data)):
+            datURI.append(URIgenerator_series(host = host, installation = installation, datasup = datasup, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
+            lastplant +=1
+        activeDB.lastvalue = str(lastplant)
+        db.session.commit()
+    else: 
+        for l in range(0,len(data)):
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type), supdata = supdata)
+            
 
     data = data.assign(URI = datURI)
     return data
@@ -385,8 +428,9 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 data = pd.read_csv('ao_mau17.csv', sep=";")
 
 lastv = '2'
-URIgenerator_series(host = "opensilec", installation = "M2P", year = "2019", resource_type="plant", project = "DIA2017", lastvalue = lastv)
-add_URI_col(data = data, host = 'opensilex.org', installation='M3P', year = '2017', resource_type='plant', project='DIA2017')
+supdata = {"relPlant": "PLO2"}
+URIgenerator_series(host = "opensilec", installation = "M2P", year = "2019", resource_type = "plant", project = "DIA2017", lastvalue = lastv)
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
 # generate lots of URI
 #init dbs
 # initm3p1=m3p_collected_URI(type="plant")

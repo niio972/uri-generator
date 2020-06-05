@@ -369,12 +369,11 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         finalURI = finalURI + "id/annotation/" + Hash
 
     if resource_type == "actuator":
-      finalURI = finalURI + year + "/a" + year[2:]+ str(lastvalue).rjust(6, "0")
+        finalURI = finalURI + year + "/a" + year[2:]+ str(lastvalue).rjust(6, "0")
     
     if resource_type == "document":
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
         finalURI = finalURI + "documents/document" + Hash
-
 
     if resource_type == "sensor":
         finalURI = finalURI + year + "/se" + year[2:] + str(lastvalue).rjust(6, "0")
@@ -384,9 +383,12 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 
     if resource_type == "plant":
         finalURI = finalURI + year + "/" + project + "/pl" + year[2:]+ str(lastvalue).rjust(6, "0")
+     
+    if resource_type == "plot":
+        finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ str(lastvalue).rjust(6, "0")
     
     if resource_type == "pot":
-        finalURI = finalURI + year + "/" + project + "/pt" + year[2:]+ str(lastvalue).rjust(6, "0")
+        finalURI = finalURI + year + "/" + project + "/po" + year[2:]+ str(lastvalue).rjust(6, "0")
 
     if resource_type == "leaf":
         relPlant = datasup['relPlant']
@@ -409,7 +411,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
     activeDB = m3p_collected_URI.query.filter_by(type = resource_type).first()
     datURI = []
-    if(resource_type!='data'):
+    if(resource_type not in ['data', 'image', 'event', 'annotation']):
         lastplant = int(activeDB.lastvalue)
         for l in range(0,len(data)):
             datURI.append(URIgenerator_series(host = host, installation = installation, datasup = datasup, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
@@ -419,17 +421,16 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     else: 
         for l in range(0,len(data)):
             datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type), supdata = supdata)
-            
 
     data = data.assign(URI = datURI)
     return data
 
 
 data = pd.read_csv('ao_mau17.csv', sep=";")
+"kl" not in ["ki", "kl"]
 
 lastv = '2'
 supdata = {"relPlant": "PLO2"}
-URIgenerator_series(host = "opensilec", installation = "M2P", year = "2019", resource_type = "plant", project = "DIA2017", lastvalue = lastv)
 add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
 # generate lots of URI
 #init dbs

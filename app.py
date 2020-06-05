@@ -420,7 +420,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
         db.session.commit()
     else: 
         for l in range(0,len(data)):
-            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type), supdata = supdata)
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, datasup = datasup))
 
     data = data.assign(URI = datURI)
     return data
@@ -432,8 +432,26 @@ data = pd.read_csv('ao_mau17.csv', sep=";")
 lastv = '2'
 supdata = {"relPlant": "PLO2"}
 add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'ear', project = 'DIA2017', datasup = supdata)
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'pot', project = 'DIA2017', datasup = supdata)
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plot', project = 'DIA2017')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plant', project = 'SECPRO')
+add_URI_col(data = data, host = 'opensilex.org', resource_type = 'project', project = 'DIA2017')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'infra')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'sensor')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'vector')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'annotation')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'event')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'actuator')
+add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
 # generate lots of URI
 #init dbs
+# initm3p0=m3p_collected_URI(type="actuator")
+# db.session.add(initm3p0)
+# db.session.commit()
+
 # initm3p1=m3p_collected_URI(type="plant")
 # db.session.add(initm3p1)
 # db.session.commit()

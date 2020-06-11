@@ -1,4 +1,4 @@
-from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, flash
 from markupsafe import escape
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -9,11 +9,12 @@ import random
 import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 """ CORS(app, resources={r'/*': {'origins': '*'}}) """
 db = SQLAlchemy(app)
-
+if __name__=="__main__":
+    app.run(debug=True)
 ### Models
 class custom_design(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -111,9 +112,27 @@ def data():
 def method():
    return render_template("method.html")
 
-@app.route("/import_dataset")
+@app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
-   return render_template("import.html")
+    if request.method == 'POST':
+        print(request.form['installation'])
+        session['hostname'] = request.form['hostname']
+        session['installation'] = request.form['installation']   
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect("import_dataset.html")
+        f = request.files['file']
+        if f.filename == '':
+            flash('No selected file')
+            return redirect("import_dataset.html")
+        f.save('uploads/uploaded_file.csv')
+        print(request.form.get('resource_type') )
+        dataset = pd.read_csv('uploads/uploaded_file.csv')
+        dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'])
+        dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
+        return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
+    else:
+        return render_template("import.html")    
 
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
@@ -234,24 +253,6 @@ def download(filename):
         pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
         return send_file("download/"+filename+".csv")
 
-@app.route('/import',methods = ['POST'])
-def upload_route_summary():
-    if request.method == 'POST':
-
-        # Create variable for uploaded file
-        f = request.files['fileupload']  
-
-        #store the file contents as a string
-        fstring = f.read()
-        
-        #avec pandas
-        dataset = pd.read_csv()
-
-        #create list of dictionaries keyed by header row
-        #csv_dicts = [{k: v for k, v in row.items()} for row in csv.DictReader(fstring.splitlines(), skipinitialspace=True)]
-
-        #do something list of dictionaries
-    return "success"
 
 ### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
@@ -426,26 +427,25 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 
-data = pd.read_csv('ao_mau17.csv', sep=";")
-"kl" not in ["ki", "kl"]
+# data = pd.read_csv('ao_mau17.csv', sep=";")
 
-lastv = '2'
-supdata = {"relPlant": "PLO2"}
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'ear', project = 'DIA2017', datasup = supdata)
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'pot', project = 'DIA2017', datasup = supdata)
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plot', project = 'DIA2017')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plant', project = 'SECPRO')
-add_URI_col(data = data, host = 'opensilex.org', resource_type = 'project', project = 'DIA2017')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'infra')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'sensor')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'vector')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'annotation')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'event')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'actuator')
-add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
+# lastv = '2'
+# supdata = {"relPlant": "PLO2"}
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'ear', project = 'DIA2017', datasup = supdata)
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'pot', project = 'DIA2017', datasup = supdata)
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plot', project = 'DIA2017')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plant', project = 'SECPRO')
+# add_URI_col(data = data, host = 'opensilex.org', resource_type = 'project', project = 'DIA2017')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'infra')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'sensor')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'vector')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'annotation')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'event')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'actuator')
+# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
 # generate lots of URI
 #init dbs
 # initm3p0=m3p_collected_URI(type="actuator")
@@ -480,5 +480,3 @@ add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2
 # db.session.add(initm3p7)
 # db.session.commit()
 
-if __name__=="__main__":
-    app.run(debug=True)

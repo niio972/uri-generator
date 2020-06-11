@@ -3,28 +3,44 @@
 Import dataset
 {% endblock %}
 {% block content %}
-<form class="installation", method="post">
+
+<form method="post" enctype="multipart/form-data">
+   <input type="file" name="file" id="file">
+   <!-- <input type="submit" value="Upload File" name="submit_file"> -->
+
    <label for="hostname">Host Name</label> <br>
    <input type=text name="hostname"  value="your_institution"> <br>
    <label>Installation name</label> <br>
    <input type=text name="installation"  value="your installation"> <br>
-   
-   <form action="upload.html" method="post" enctype="multipart/form-data">
-   <input type="file" name="fileupload" id="fileToUpload">
-   <input type="submit" value="Upload File" name="submit">
-   </form>
-   
-   <select name="resource_Type" id="resource_type">
-       <option value="lire le csv">lire le csv</option>
-   
-    </select>
+   <select name="resource_type" id="resource_type">
+      <option value="species">species</option>
+      <option value="event">event</option>
+      <option value="agent">agent</option>
+      <option value="annotation">annotation</option>
+      <option value="actuator">actuator</option>
+      <option value="document">document</option>
+      <option value="sensor">sensor</option>
+      <option value="vector">vector</option>
+      <option value="plant">plant</option>
+      <option value="plot">plot</option>
+      <option value="leaf">leaf</option>
+      <option value="ear">ear</option>
+      <option value="data">data</option>
+      <option value="image">image</option>
+   </select> <br>
 
+   <label for="project">Project related</label> <br>
+   <input type=text name="project"  value="aProject"> <br>
+   <label for="year">Year</label> <br>
+   <input type=text name="year" label = "Year" value="2020"> <br>
+
+   
     Reuse ID
     What ID ?
 
-
+   <br>
    <button type=submit class="btn btn-primary">
       Generate URI
    </button>
-</form>
+</form> 
 {% endblock %}

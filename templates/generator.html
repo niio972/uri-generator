@@ -15,22 +15,23 @@
         <div class="container-fluid">
           <div class="navbar dropdown" >
             <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
-            <a href="{{ url_for('device') }}" class="navbar-item">Device</a>
+            <a href="{{ url_for('login')}}" class="navbar-item">Login</a>
+            <!-- <a href="{{ url_for('device') }}" class="navbar-item">Device</a>
             <a href="{{ url_for('scientificObject') }}" class="navbar-item">Scientific Object</a>
             <a href="{{ url_for('document') }}" class="navbar-item">Document</a>
             <a href="{{ url_for('data') }}" class="navbar-item">Data</a>
-            <a href="{{ url_for('method') }}" class="navbar-item">Method</a>
+            <a href="{{ url_for('method') }}" class="navbar-item">Method</a> 
             <a href="{{ url_for('your_collection')}}" class="navbar-item">Your collection</a>
-            <a href="{{ url_for('new_schema')}}" class="navbar-item">Alternative Schema</a>
+            <a href="{{ url_for('new_schema')}}" class="navbar-item">Alternative Schema</a> -->
             <a href="{{ url_for('your_database')}}" class="navbar-item">list URI</a>
             <a href="{{ url_for('import_dataset')}}" class="navbar-item">Import file</a>
 
           </div>
-          <div class="navbar dropdown">
+          <!-- <div class="navbar dropdown">
             <a href="{{ url_for('variable') }}" class="navbar-brand">Variable pattern</a>
             <a href="{{ url_for('create_variable') }}" class="navbar-item">Create variables</a>
             <a href="{{ url_for('your_variables')}}" class="navbar-item">Your variables</a>
-          </div>
+          </div>  -->
             <div class="body-content" id=URI_generator>
               {% block content %}
               {% endblock %}

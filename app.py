@@ -35,8 +35,9 @@ class collected_URI(db.Model):
     """ def __init__(self, candid=None, rank=None, user_id=None):
         self.data = (type, value, id) """
     
-class m3p_collected_URI(db.Model):
+class user_collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(200), nullable=False)
     type = db.Column(db.String(200), nullable=False)
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -70,6 +71,23 @@ def device():
 @app.route("/scientificObject/")
 def scientificObject():
     return render_template("scientificObject.html")
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        if request.form['password'] == 'password' and request.form['username'] == 'admin':
+            session['username'] = request.form['username']
+            session['logged_in'] = True
+        else:
+            flash('wrong password!')
+        print(session["username"])
+        return redirect(url_for('home'))
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return redirect(url_for('home'))
+
 
 ### Generation
 @app.route("/uri/experiment")
@@ -234,7 +252,7 @@ def your_collection():
 
 @app.route("/your_database")
 def your_database():
-    collections = m3p_collected_URI.query.all()
+    collections = user_collected_URI.query.all()
     return render_template("your_database.html", collections=collections)
 
 @app.route("/your_variables")
@@ -326,17 +344,6 @@ def key_generator():
     if key_class=="crypto":
         return hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
 
-def read_multiple_URI(file):
-    #read the file
-    URI_table = pd.read_csv (file)
-    for line in URI_table:
-        host = session['hostname']
-        installation = session['installationName']
-        line_type = session['subpath']
-        line_year = line.year        
-        
-        URIgenerator(host = host, installation = installation, resource_type=line_type, )
-
 def URIgenerator_series(host, installation, resource_type, year="", lastvalue = "001", project="", datasup = {} ):
     if host[-1] != "/":
         host = host + "/" # Ensure host url ends with a slash
@@ -410,7 +417,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 
 
 def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
-    activeDB = m3p_collected_URI.query.filter_by(type = resource_type).first()
+    activeDB = user_collected_URI.query.filter_by(type = resource_type).first()
     datURI = []
     if(resource_type not in ['data', 'image', 'event', 'annotation']):
         lastplant = int(activeDB.lastvalue)
@@ -447,36 +454,37 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'actuator')
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
 # generate lots of URI
+
 #init dbs
-# initm3p0=m3p_collected_URI(type="actuator")
-# db.session.add(initm3p0)
+# inittest0=user_collected_URI(user = "test", type="actuator")
+# db.session.add(inittest0)
 # db.session.commit()
 
-# initm3p1=m3p_collected_URI(type="plant")
-# db.session.add(initm3p1)
+# inittest1=user_collected_URI(user = "test", type="plant")
+# db.session.add(inittest1)
 # db.session.commit()
 
-# initm3p2=m3p_collected_URI(type="plot")
-# db.session.add(initm3p2)
+# inittest2=user_collected_URI(user = "test", type="plot")
+# db.session.add(inittest2)
 # db.session.commit()
         
-# initm3p3=m3p_collected_URI(type="pot")
-# db.session.add(initm3p3)
+# inittest3=user_collected_URI(user = "test", type="pot")
+# db.session.add(inittest3)
 # db.session.commit()
 
-# initm3p4=m3p_collected_URI(type="ear")
-# db.session.add(initm3p4)
+# inittest4=user_collected_URI(user = "test", type="ear")
+# db.session.add(inittest4)
 # db.session.commit()
 
-# initm3p5=m3p_collected_URI(type="leaf")
-# db.session.add(initm3p5)
+# inittest5=user_collected_URI(user = "test", type="leaf")
+# db.session.add(inittest5)
 # db.session.commit()
 
-# initm3p6=m3p_collected_URI(type="sensor")
-# db.session.add(initm3p6)
+# inittest6=user_collected_URI(user = "test", type="sensor")
+# db.session.add(inittest6)
 # db.session.commit()
 
-# initm3p7=m3p_collected_URI(type="vector")
-# db.session.add(initm3p7)
+# inittest7=user_collected_URI(user = "test", type="vector")
+# db.session.add(inittest7)
 # db.session.commit()
 

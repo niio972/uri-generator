@@ -1,0 +1,15 @@
+{% extends "generator.html" %}
+{% block title %}
+Login
+{% endblock %}
+{% block content %}
+<form class="installation", method="post">
+   <label for="username">Username</label> <br>
+   <input type=text name="username"  value="opensilex.org"> <br>
+   <label>Password</label> <br>
+   <input type="text" name="password" value="Diaphen"> <br>
+   <button type=submit class="btn btn-primary">
+      Login
+   </button>
+</form>
+{% endblock %}

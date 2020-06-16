@@ -20,7 +20,6 @@ class custom_design(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     content = db.Column(db.String(200), nullable=False)
-    
     def __repr__(self):
         return "Design %r" %self.id
 
@@ -29,7 +28,6 @@ class collected_URI(db.Model):
     type = db.Column(db.String(200), nullable=False)
     value = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    
     def __repr__(self):
         return "URI %r" %self.id
     """ def __init__(self, candid=None, rank=None, user_id=None):
@@ -51,14 +49,20 @@ class collected_variables(db.Model):
     Method = db.Column(db.String(50), nullable=False)
     Unit = db.Column(db.String(50), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
     def __repr__(self):
         return "Variable %r" %self.id
+
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String)
+    password = db.Column(db.String)
 
 ### Menu
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('home.html')
+    username = session['username']
+    return render_template('home.html', username = username)
 
 @app.route("/variable/")
 def variable():
@@ -74,7 +78,11 @@ def scientificObject():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['password'] == 'password' and request.form['username'] == 'admin':
+        query = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
+        print(query.username)
+        print(query.password)
+        
+        if query:
             session['username'] = request.form['username']
             session['logged_in'] = True
         else:
@@ -252,7 +260,7 @@ def your_collection():
 
 @app.route("/your_database")
 def your_database():
-    collections = user_collected_URI.query.all()
+    collections = user_collected_URI.query.filter_by(user = session['username'])
     return render_template("your_database.html", collections=collections)
 
 @app.route("/your_variables")
@@ -270,7 +278,6 @@ def download(filename):
         table = collected_variables.query.all()
         pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
         return send_file("download/"+filename+".csv")
-
 
 ### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
@@ -417,7 +424,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 
 
 def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
-    activeDB = user_collected_URI.query.filter_by(type = resource_type).first()
+    activeDB = user_collected_URI.query.filter_by(user = session['username'], type = resource_type).first()
     datURI = []
     if(resource_type not in ['data', 'image', 'event', 'annotation']):
         lastplant = int(activeDB.lastvalue)
@@ -455,36 +462,50 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
 # generate lots of URI
 
-#init dbs
-# inittest0=user_collected_URI(user = "test", type="actuator")
+# usertest = User("test", "test")
+# db.session.add(usertest)
+# useradmin = User("admin", "admin")
+# db.session.add(useradmin)
+# user_je = User("jeaneudes", "pic3.14")
+# db.session.add(user_je)
+# db.session.commit()
+
+# @app.route('/test_user')
+# def test_user():
+#     query = User.query.filter_by(username = "test", password = "test" ).first()
+#     print(query.username)
+#     print(query.password)
+#     return "Object not found "
+# init dbs
+# inittest0=user_collected_URI(user = "admin", type="actuator")
 # db.session.add(inittest0)
 # db.session.commit()
 
-# inittest1=user_collected_URI(user = "test", type="plant")
+# inittest1=user_collected_URI(user = "admin", type="plant")
 # db.session.add(inittest1)
 # db.session.commit()
 
-# inittest2=user_collected_URI(user = "test", type="plot")
+# inittest2=user_collected_URI(user = "admin", type="plot")
 # db.session.add(inittest2)
 # db.session.commit()
         
-# inittest3=user_collected_URI(user = "test", type="pot")
+# inittest3=user_collected_URI(user = "admin", type="pot")
 # db.session.add(inittest3)
 # db.session.commit()
 
-# inittest4=user_collected_URI(user = "test", type="ear")
+# inittest4=user_collected_URI(user = "admin", type="ear")
 # db.session.add(inittest4)
 # db.session.commit()
 
-# inittest5=user_collected_URI(user = "test", type="leaf")
+# inittest5=user_collected_URI(user = "admin", type="leaf")
 # db.session.add(inittest5)
 # db.session.commit()
 
-# inittest6=user_collected_URI(user = "test", type="sensor")
+# inittest6=user_collected_URI(user = "admin", type="sensor")
 # db.session.add(inittest6)
 # db.session.commit()
 
-# inittest7=user_collected_URI(user = "test", type="vector")
+# inittest7=user_collected_URI(user = "admin", type="vector")
 # db.session.add(inittest7)
 # db.session.commit()
 

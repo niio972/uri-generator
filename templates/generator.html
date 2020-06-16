@@ -15,7 +15,8 @@
         <div class="container-fluid">
           <div class="navbar dropdown" >
             <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
-            <a href="{{ url_for('login')}}" class="navbar-item">Login</a>
+            <a href="{{ url_for('login')}}" class="navbar-item">Log in</a>
+            <a href="{{ url_for('logout')}}" class="navbar-item">Log out</a>
             <!-- <a href="{{ url_for('device') }}" class="navbar-item">Device</a>
             <a href="{{ url_for('scientificObject') }}" class="navbar-item">Scientific Object</a>
             <a href="{{ url_for('document') }}" class="navbar-item">Document</a>
@@ -25,7 +26,7 @@
             <a href="{{ url_for('new_schema')}}" class="navbar-item">Alternative Schema</a> -->
             <a href="{{ url_for('your_database')}}" class="navbar-item">list URI</a>
             <a href="{{ url_for('import_dataset')}}" class="navbar-item">Import file</a>
-
+            
           </div>
           <!-- <div class="navbar dropdown">
             <a href="{{ url_for('variable') }}" class="navbar-brand">Variable pattern</a>

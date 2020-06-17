@@ -79,15 +79,12 @@ def scientificObject():
 def login():
     if request.method == 'POST':
         query = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
-        print(query.username)
-        print(query.password)
         
         if query:
             session['username'] = request.form['username']
             session['logged_in'] = True
         else:
             flash('wrong password!')
-        print(session["username"])
         return redirect(url_for('home'))
     return render_template("login.html")
 
@@ -141,7 +138,6 @@ def method():
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':
-        print(request.form['installation'])
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']   
         if 'file' not in request.files:
@@ -158,7 +154,7 @@ def import_dataset():
         dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
-        return render_template("import.html")    
+        return render_template("import.html", username = session['username'])    
 
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
@@ -444,7 +440,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 # data = pd.read_csv('ao_mau17.csv', sep=";")
 
 # lastv = '2'
-# supdata = {"relPlant": "PLO2"}
+# supdata = {"relPlant": ["PLO2", "PLO2", "PLO3", "PLO3", "PLO4"]}
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')

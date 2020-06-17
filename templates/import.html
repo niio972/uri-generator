@@ -5,13 +5,15 @@ Import dataset
 {% block content %}
 
 <form method="post" enctype="multipart/form-data">
+   <label for="file">Import your file</label>
    <input type="file" name="file" id="file">
    <!-- <input type="submit" value="Upload File" name="submit_file"> -->
 
    <label for="hostname">Host Name</label> <br>
-   <input type=text name="hostname"  value="your_institution"> <br>
+   <input type=text name="hostname"  value="{{username}}"> <br>
    <label>Installation name</label> <br>
    <input type=text name="installation"  value="your installation"> <br>
+   <label for="Resource Type">Resource Type</label> <br>
    <select name="resource_type" id="resource_type">
       <option value="species">species</option>
       <option value="event">event</option>
@@ -28,12 +30,21 @@ Import dataset
       <option value="data">data</option>
       <option value="image">image</option>
    </select> <br>
+   <div id="additional_data">
+      Ici du JS qui lit le fichier. csv
+      <h3>Additionnal Data</h3>
+      <label for="project">Project related</label> <br>
+      <input type=text name="project"  value="aProject"> <br>
+      <label for="year">Year</label> <br>
+      <input type=text name="year" label = "Year" value="2020"> <br>
 
-   <label for="project">Project related</label> <br>
-   <input type=text name="project"  value="aProject"> <br>
-   <label for="year">Year</label> <br>
-   <input type=text name="year" label = "Year" value="2020"> <br>
-
+      <label for="relPlant">Relative Plant</label> <br>
+      <input type=text name="relplant" label = "relPlant" value="Related_plant"> <br>   
+      <label for="species">Species Column</label> <br>
+      <input type=text name="species" label = "species" value="Species"> <br>   
+      
+   </div>
+   
    
     Reuse ID
     What ID ?

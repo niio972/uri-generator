@@ -3,7 +3,14 @@ var app = new Vue({
   data: {
     URI: 'your uri model',
     key_class: "primary_key",
-    segments: [ ]
+    user: "test",
+    segments: [],
+    resource_type: "plant",
+    supl_data: {
+      "year": ['plant', 'plot', 'pot', 'leaf', 'ear', 'sensor', 'vector', 'actuator', 'data', 'image'],
+      "project":['plant', 'plot', 'pot', 'leaf', 'ear', 'project'],
+      "relative_plant":['leaf', 'ear'] 
+    }
   },
   delimiters: ['[[',']]'],
   methods:{

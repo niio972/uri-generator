@@ -13,8 +13,9 @@ app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 """ CORS(app, resources={r'/*': {'origins': '*'}}) """
 db = SQLAlchemy(app)
-if __name__=="__main__":
+if __name__ == "__main__":
     app.run(debug=True)
+
 ### Models
 class custom_design(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,8 +31,6 @@ class collected_URI(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     def __repr__(self):
         return "URI %r" %self.id
-    """ def __init__(self, candid=None, rank=None, user_id=None):
-        self.data = (type, value, id) """
     
 class user_collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +38,6 @@ class user_collected_URI(db.Model):
     type = db.Column(db.String(200), nullable=False)
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 class collected_variables(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -92,7 +90,6 @@ def login():
 def logout():
     session['logged_in'] = False
     return redirect(url_for('home'))
-
 
 ### Generation
 @app.route("/uri/experiment")
@@ -148,9 +145,13 @@ def import_dataset():
             flash('No selected file')
             return redirect("import_dataset.html")
         f.save('uploads/uploaded_file.csv')
-        print(request.form.get('resource_type') )
         dataset = pd.read_csv('uploads/uploaded_file.csv')
-        dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'])
+        if request.form.get('resource_type') in ['leaf', 'ear']:
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
+        if request.form.get('resource_type') =="species":
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['species'])  
+        # else:
+        #     dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'])
         dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
@@ -353,17 +354,17 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
     finalURI = host + installation + "/"
 
     # cas où local infra existe ou pas
-    if resource_type == "installation":
-        finalURI = finalURI  
+    # if resource_type == "installation":
+    #     finalURI = finalURI  
 
-    if resource_type == "infra":
-        finalURI = finalURI
+    # if resource_type == "infra":
+    #     finalURI = finalURI
 
-    if resource_type == "projet":
-        finalURI = finalURI + project
+    # if resource_type == "project":
+    #     finalURI = finalURI + project
 
-    if resource_type == "experiment":
-        finalURI = finalURI + experiment
+    # if resource_type == "experiment":
+    #     finalURI = finalURI + experiment
 
     if resource_type == "species":
         finalURI = finalURI + datasup['species']
@@ -418,30 +419,42 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         finalURI = finalURI + year + "/image/" + Hash
     return finalURI
 
-
 def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
     activeDB = user_collected_URI.query.filter_by(user = session['username'], type = resource_type).first()
     datURI = []
-    if(resource_type not in ['data', 'image', 'event', 'annotation']):
+    if(resource_type in ['plant', 'plot', 'pot', 'sensor', 'vector', 'actuator']):
         lastplant = int(activeDB.lastvalue)
         for l in range(0,len(data)):
             datURI.append(URIgenerator_series(host = host, installation = installation, datasup = datasup, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
             lastplant +=1
         activeDB.lastvalue = str(lastplant)
         db.session.commit()
-    else: 
+    if(resource_type in ['leaf', 'ear']):
+        lastplant = int(activeDB.lastvalue)
         for l in range(0,len(data)):
-            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, datasup = datasup))
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant), datasup = {'relPlant':data.eval(datasup)[l]}))
+            lastplant +=1
+        activeDB.lastvalue = str(lastplant)
+        db.session.commit()
+
+    if(resource_type in ['data', 'image', 'event', 'annotation']): 
+        for l in range(0,len(data)):
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type))
+
+    if(resource_type =="species"): 
+        for l in range(0,len(data)):
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, datasup = {'species':data.eval(datasup)[l]}))
 
     data = data.assign(URI = datURI)
     return data
 
 
 # data = pd.read_csv('ao_mau17.csv', sep=";")
-
+# data2 = pd.read_csv('Example data/example_leaf.csv')
 # lastv = '2'
-# supdata = {"relPlant": ["PLO2", "PLO2", "PLO3", "PLO3", "PLO4"]}
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = supdata)
+# supdata = ["PLO2", "PLO2", "PLO3", "PLO3", "PLO4"]
+# add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
+# URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')
 # add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'ear', project = 'DIA2017', datasup = supdata)

@@ -14,7 +14,7 @@ Import dataset
    <label>Installation name</label> <br>
    <input type=text name="installation"  value="your installation"> <br>
    <label for="Resource Type">Resource Type</label> <br>
-   <select name="resource_type" id="resource_type">
+   <select name="resource_type" id="resource_type" v-model="resource_type">
       <option value="species">species</option>
       <option value="event">event</option>
       <option value="agent">agent</option>
@@ -31,18 +31,29 @@ Import dataset
       <option value="image">image</option>
    </select> <br>
    <div id="additional_data">
-      Ici du JS qui lit le fichier. csv
-      <h3>Additionnal Data</h3>
-      <label for="project">Project related</label> <br>
-      <input type=text name="project"  value="aProject"> <br>
-      <label for="year">Year</label> <br>
-      <input type=text name="year" label = "Year" value="2020"> <br>
 
-      <label for="relPlant">Relative Plant</label> <br>
-      <input type=text name="relplant" label = "relPlant" value="Related_plant"> <br>   
-      <label for="species">Species Column</label> <br>
-      <input type=text name="species" label = "species" value="Species"> <br>   
-      
+      <h3>Additionnal Data</h3>
+      <div v-if="supl_data.project.includes(resource_type)">
+         <label for="project">Project related</label> <br>
+         <input type=text name="project"  value="aProject"> <br>
+         alternative : lire le csv et récupérer la donnée dans le csv
+      </div>
+      <div v-if="supl_data.year.includes(resource_type)">
+         <label for="year">Year</label> <br>
+         <input type=text name="year" label = "Year" value="2020"> <br>
+      alternative : lire le csv et récupérer la donnée dans le csv
+      </div>
+
+      <div v-if="supl_data.relative_plant.includes(resource_type)">
+         <label for="relPlant">Relative plant column</label> <br>
+         <input type=text name="relplant" label = "relPlant" value="Related_plant"> <br>    
+      </div>
+      <div v-if="resource_type === 'species'">
+         alternative : lire le csv et récupérer la donnée dans le csv du nom exact de variable
+         <label for="species">Species column</label> <br>
+         <input type=text name="species" label = "species" value="Species"> <br>   
+      </div>
+     
    </div>
    
    

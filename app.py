@@ -73,6 +73,7 @@ def device():
 @app.route("/scientificObject/")
 def scientificObject():
     return render_template("scientificObject.html")
+    
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -85,6 +86,33 @@ def login():
             flash('wrong password!')
         return redirect(url_for('home'))
     return render_template("login.html")
+
+@app.route("/new_user", methods=['GET', 'POST'])
+def create_user():
+    if request.method=='POST':
+        new_user = User(username = request.form['user'], password = request.form['password'])
+        db.session.add(new_user)
+        # init dbs
+        init0=user_collected_URI(user = request.form['user'], type="actuator")
+        db.session.add(init0)
+        init1=user_collected_URI(user = request.form['user'], type="plant")
+        db.session.add(init1)
+        init2=user_collected_URI(user = request.form['user'], type="plot")
+        db.session.add(init2)
+        init3=user_collected_URI(user = request.form['user'], type="pot")
+        db.session.add(init3)
+        init4=user_collected_URI(user = request.form['user'], type="ear")
+        db.session.add(init4)
+        init5=user_collected_URI(user = request.form['user'], type="leaf")
+        db.session.add(init5)
+        init6=user_collected_URI(user = request.form['user'], type="sensor")
+        db.session.add(init6)
+        init7=user_collected_URI(user = request.form['user'], type="vector")
+        db.session.add(init7)
+        db.session.commit()
+        return redirect(url_for('login'))
+    else:
+        return render_template('new_user.html')
 
 @app.route("/logout")
 def logout():
@@ -148,10 +176,17 @@ def import_dataset():
         dataset = pd.read_csv('uploads/uploaded_file.csv')
         if request.form.get('resource_type') in ['leaf', 'ear']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
-        if request.form.get('resource_type') =="species":
-            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['species'])  
-        # else:
-        #     dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'])
+        
+        if request.form.get('resource_type') == "species":
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , datasup = request.form['species'])  
+        
+        if request.form.get('resource_type') in ['plant', 'pot', 'plot']:
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'])
+        
+        if request.form.get('resource_type') in ['sensor', 'vector', 'data', 'image', 'event', 'annotation','actuator']:
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
+        
+
         dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
@@ -425,7 +460,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     if(resource_type in ['plant', 'plot', 'pot', 'sensor', 'vector', 'actuator']):
         lastplant = int(activeDB.lastvalue)
         for l in range(0,len(data)):
-            datURI.append(URIgenerator_series(host = host, installation = installation, datasup = datasup, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
+            datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, project = project, lastvalue = str(lastplant)))
             lastplant +=1
         activeDB.lastvalue = str(lastplant)
         db.session.commit()

@@ -119,7 +119,8 @@ def logout():
     session['logged_in'] = False
     return redirect(url_for('home'))
 
-### Generation
+### 
+##Generation
 @app.route("/uri/experiment")
 def experiment():
     return render_template("experiment.html")
@@ -159,7 +160,7 @@ def data():
 @app.route("/uri/method/")
 def method():
    return render_template("method.html")
-
+### 
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':
@@ -401,13 +402,6 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
     # if resource_type == "experiment":
     #     finalURI = finalURI + experiment
 
-    if resource_type == "species":
-        finalURI = finalURI + datasup['species']
-
-    if resource_type == "event":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + "id/event/" + Hash
-
     if resource_type == "agent":
         finalURI = finalURI + "id/agent/" + datasup["agentName"]
     
@@ -422,11 +416,21 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
         finalURI = finalURI + "documents/document" + Hash
 
-    if resource_type == "sensor":
-        finalURI = finalURI + year + "/se" + year[2:] + str(lastvalue).rjust(6, "0")
+    if resource_type == "data":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/data/" + Hash
     
-    if resource_type == "vector":
-        finalURI = finalURI + year + "/ve" + year[2:] + str(lastvalue).rjust(6, "0")
+    if resource_type == "ear":
+        relPlant = datasup['relPlant']
+        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(lastvalue).rjust(6, "0") 
+
+    if resource_type == "event":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + "id/event/" + Hash
+
+    if resource_type == "image":
+        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        finalURI = finalURI + year + "/image/" + Hash
 
     if resource_type == "plant":
         finalURI = finalURI + year + "/" + project + "/pl" + year[2:]+ str(lastvalue).rjust(6, "0")
@@ -441,17 +445,15 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         relPlant = datasup['relPlant']
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/lf" + year[2:]+ str(lastvalue).rjust(6, "0")
 
-    if resource_type == "ear":
-        relPlant = datasup['relPlant']
-        finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(lastvalue).rjust(6, "0") 
+    if resource_type == "species":
+        finalURI = finalURI + datasup['species']
 
-    if resource_type == "data":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + year + "/data/" + Hash
+    if resource_type == "sensor":
+        finalURI = finalURI + year + "/se" + year[2:] + str(lastvalue).rjust(6, "0")
     
-    if resource_type == "image":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + year + "/image/" + Hash
+    if resource_type == "vector":
+        finalURI = finalURI + year + "/ve" + year[2:] + str(lastvalue).rjust(6, "0")
+
     return finalURI
 
 def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):

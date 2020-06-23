@@ -21,9 +21,17 @@
           <a href="{{ url_for('your_collection')}}" class="navbar-item">Your collection</a>
   </div>
     <br>
+    {% if statut  %}
     <p style=" background-color: gainsboro ; color:coral; width: 30%;">
       Connected as {{username}}
     </p>
+    {% endif %}
+    {% if not statut %}
+    <p style=" background-color: gainsboro ; color:coral; width: 30%;">
+      Not connected !
+    </p>
+    {% endif %}
+    
     <br>
     <b>Important!</b>
     <p>

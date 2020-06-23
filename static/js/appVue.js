@@ -3,7 +3,6 @@ var app = new Vue({
   data: {
     URI: 'your uri model',
     key_class: "primary_key",
-    user: "test",
     segments: [],
     resource_type: "plant",
     supl_data: {

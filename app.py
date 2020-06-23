@@ -60,7 +60,7 @@ class User(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     username = session['username']
-    return render_template('home.html', username = username)
+    return render_template('home.html', username = username, statut = session['logged_in'])
 
 @app.route("/variable/")
 def variable():

@@ -7,7 +7,8 @@ Login
    <label for="username">Username</label> <br>
    <input type=text name="username" placeholder="test" v-model="user"> <br>
    <label for="password">Password</label> <br>
-   <input type="text" name="password" placeholder="test"> <br>
+   <input type="password" name="password" placeholder="test"> <br>
    <button type=submit class="btn btn-primary"> Login </button>
 </form>
+<p>Not registered yet ? Create your account <a href="{{url_for('create_user')}}">here</a></p>
 {% endblock %}

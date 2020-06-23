@@ -15,7 +15,6 @@
         <div class="container-fluid">
           <div class="navbar dropdown" >
             <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
-            
             {% if not statut %}
               <a href="{{ url_for('login')}}" class="navbar-item">Log in</a>
             {% endif %}
@@ -25,8 +24,6 @@
               <a href="{{ url_for('your_database')}}" class="navbar-item">list URI</a>
               <a href="{{ url_for('import_dataset')}}" class="navbar-item">Import file</a>
             {% endif %}
-            
-            
           </div>
           <!-- <div class="navbar dropdown">
             <a href="{{ url_for('variable') }}" class="navbar-brand">Variable pattern</a>

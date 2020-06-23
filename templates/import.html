@@ -7,29 +7,29 @@ Import dataset
 <form method="post" enctype="multipart/form-data">
    <label for="file">Import your file</label>
    <input type="file" name="file" id="file">
-   <!-- <input type="submit" value="Upload File" name="submit_file"> -->
 
    <label for="hostname">Host Name</label> <br>
-   <input type=text name="hostname"  value="{{username}}"> <br>
+   <input type=text name="hostname" value="{{username}}"> <br>
    <label>Installation name</label> <br>
-   <input type=text name="installation"  value="{{installation}}"> <br>
+   <input type=text name="installation" value="{{installation}}"> <br>
+
    <label for="Resource Type">Resource Type</label> <br>
    <select name="resource_type" id="resource_type" v-model="resource_type">
-      <option value="species">species</option>
-      <option value="event">event</option>
-      <option value="agent">agent</option>
-      <option value="annotation">annotation</option>
       <option value="actuator">actuator</option>
-      <option value="document">document</option>
-      <option value="sensor">sensor</option>
-      <option value="vector">vector</option>
+      <!-- <option value="agent">agent</option> -->
+      <option value="annotation">annotation</option>
+      <option value="data">data</option>
+      <!-- <option value="document">document</option> -->
+      <option value="ear">ear</option>
+      <option value="event">event</option>
+      <option value="image">image</option>
+      <option value="leaf">leaf</option>
       <option value="plant">plant</option>
       <option value="plot">plot</option>
       <option value="pot">pot</option>
-      <option value="leaf">leaf</option>
-      <option value="ear">ear</option>
-      <option value="data">data</option>
-      <option value="image">image</option>
+      <option value="sensor">sensor</option>
+      <option value="species">species</option>
+      <option value="vector">vector</option>
    </select> <br>
    <div id="additional_data">
 

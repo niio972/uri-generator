@@ -190,7 +190,7 @@ def import_dataset():
         dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
-        return render_template("import.html", username = session['username'])    
+        return render_template("import.html", username = session['username'], installation = session['installation'])    
 
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])

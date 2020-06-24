@@ -3,6 +3,7 @@ var app = new Vue({
   data: {
     URI: 'your uri model',
     key_class: "primary_key",
+    Details: false,
     segments: [],
     resource_type: "plant",
     supl_data: {
@@ -19,14 +20,19 @@ var app = new Vue({
         for (var r = 1, n = table.rows.length; r < n; r++) {
             self.segments.push(table.rows[r].cells[1].innerHTML)
         }
-      }
+      },
+      toggleDetails: function(){
+        var self = this;
+        self.Details= !self.Details
+        return(self.Details)
+      }  
     },
   computed: {
     fill_URI: function(){
       var self=this;
       self.URI = "hostname:"+self.segments.join("/");
       return(self.URI)
-    }  
+    }
     
   }
 })

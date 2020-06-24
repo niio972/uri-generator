@@ -59,8 +59,12 @@ class User(db.Model):
 ### Menu
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    username = session['username']
-    return render_template('home.html', username = username, statut = session['logged_in'])
+    if 'logged_in' not in session:
+        session['logged_in']=False
+    if 'username' in session:
+        return render_template('home.html', username = session['username'], statut = session['logged_in'])
+    else:
+        return render_template('home.html', username = "", statut = session['logged_in'])
 
 @app.route("/variable/")
 def variable():
@@ -77,9 +81,9 @@ def scientificObject():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        query = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
+        connexion = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
         
-        if query:
+        if connexion:
             session['username'] = request.form['username']
             session['logged_in'] = True
         else:
@@ -165,7 +169,11 @@ def method():
 def import_dataset():
     if request.method == 'POST':
         session['hostname'] = request.form['hostname']
-        session['installation'] = request.form['installation']   
+        session['installation'] = request.form['installation']  
+        if 'sep' in request.form:
+            SepSetting=request.form.get('sep')
+        else:
+            SepSetting=","
         if 'file' not in request.files:
             flash('No file part')
             return redirect("import_dataset.html")
@@ -174,7 +182,7 @@ def import_dataset():
             flash('No selected file')
             return redirect("import_dataset.html")
         f.save('uploads/uploaded_file.csv')
-        dataset = pd.read_csv('uploads/uploaded_file.csv')
+        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=int(request.form['skiprow']))
         if request.form.get('resource_type') in ['leaf', 'ear']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         
@@ -191,7 +199,10 @@ def import_dataset():
         dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
-        return render_template("import.html", username = session['username'], installation = session['installation'])    
+        if 'installation' in session:
+            return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
+        else:
+            return render_template("import.html", username = session['username'], installation = 'your installation', statut = session['logged_in'])    
 
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
@@ -294,7 +305,7 @@ def your_collection():
 @app.route("/your_database")
 def your_database():
     collections = user_collected_URI.query.filter_by(user = session['username'])
-    return render_template("your_database.html", collections=collections)
+    return render_template("your_database.html", collections=collections, username = session['username'], statut = session['logged_in'])
 
 @app.route("/your_variables")
 def your_variables():
@@ -485,7 +496,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     data = data.assign(URI = datURI)
     return data
 
-
+# bad_data = pd.read_csv('/home/jeaneudes/Documents/URI/generator/data_notclean.csv', sep="\t", skiprows=2)
 # data = pd.read_csv('ao_mau17.csv', sep=";")
 # data2 = pd.read_csv('Example data/example_leaf.csv')
 # lastv = '2'

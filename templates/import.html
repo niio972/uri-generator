@@ -7,7 +7,21 @@ Import dataset
 <form method="post" enctype="multipart/form-data">
    <label for="file">Import your file</label>
    <input type="file" name="file" id="file">
-
+   <p>Details: <i v-on:click="toggleDetails()" class="arrow down"></i></p> <br>
+   <div v-if="Details" style="background-color: ivory; margin-left: 50px;">
+      <label>Field separator</label> <br>      
+      <input type="checkbox" id="sep_comma" name="sep" value="," checked>
+      <label for="sep_comma">Comma (,)</label> 
+      <input type="checkbox" id="sep_semicolon" name="sep" value=";">
+      <label for="sep_semicolon">Semicolon (;)</label>
+      <input type="checkbox" id="sep_tab" name="sep" value="\t">
+      <label for="sep_tab">Tabulation (\t)</label> <br>
+      <br>
+      
+      <label for="skiprow">Table contains ___ rows of comments</label> <br>
+      <input type="text" id="skiprow" name="skiprow" placeholder="0">   
+   </div>
+   
    <label for="hostname">Host Name</label> <br>
    <input type=text name="hostname" value="{{username}}"> <br>
    <label>Installation name</label> <br>

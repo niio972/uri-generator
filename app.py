@@ -174,6 +174,10 @@ def import_dataset():
             SepSetting=request.form.get('sep')
         else:
             SepSetting=","
+        if 'skiprow' in request.form:
+            skipSetting=int(request.form['skiprow'])
+        else: 
+            skipSetting=0
         if 'file' not in request.files:
             flash('No file part')
             return redirect("import_dataset.html")
@@ -182,7 +186,7 @@ def import_dataset():
             flash('No selected file')
             return redirect("import_dataset.html")
         f.save('uploads/uploaded_file.csv')
-        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=int(request.form['skiprow']))
+        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
         if request.form.get('resource_type') in ['leaf', 'ear']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         

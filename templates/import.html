@@ -18,10 +18,11 @@ Import dataset
       <label for="sep_tab">Tabulation (\t)</label> <br>
       <br>
       
-      <label for="skiprow">Table contains ___ rows of comments</label> <br>
+      <label for="skiprow">Number of rows to skip (no data, but comment in the first ___ rows)</label> <br>
       <input type="text" id="skiprow" name="skiprow" placeholder="0">   
    </div>
-   
+   ______________
+   <div>
    <label for="hostname">Host Name</label> <br>
    <input type=text name="hostname" value="{{username}}"> <br>
    <label>Installation name</label> <br>
@@ -45,7 +46,9 @@ Import dataset
       <option value="species">species</option>
       <option value="vector">vector</option>
    </select> <br>
+   </div>
    
+   ______________
    <div id="additional_data">
 
       <h3>Additionnal Data</h3>
@@ -65,7 +68,7 @@ Import dataset
          <input type=text name="relplant" label = "relPlant" value="Related_plant"> <br>    
       </div>
       <div v-if="resource_type === 'species'">
-         alternative : lire le csv et récupérer la donnée dans le csv du nom exact de variable
+         <p>alternative : lire le csv et récupérer la donnée dans le csv du nom exact de variable</p>
          <label for="species">Species column</label> <br>
          <input type=text name="species" label = "species" value="Species"> <br>   
       </div>

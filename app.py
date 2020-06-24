@@ -499,74 +499,8 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
     data = data.assign(URI = datURI)
     return data
-
-# bad_data = pd.read_csv('/home/jeaneudes/Documents/URI/generator/data_notclean.csv', sep="\t", skiprows=2)
+# DEBUG
+# bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=2)
 # data = pd.read_csv('ao_mau17.csv', sep=";")
-# data2 = pd.read_csv('Example data/example_leaf.csv')
-# lastv = '2'
-# supdata = ["PLO2", "PLO2", "PLO3", "PLO3", "PLO4"]
 # add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
 # URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'image')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'data')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'ear', project = 'DIA2017', datasup = supdata)
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'pot', project = 'DIA2017', datasup = supdata)
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plot', project = 'DIA2017')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'plant', project = 'SECPRO')
-# add_URI_col(data = data, host = 'opensilex.org', resource_type = 'project', project = 'DIA2017')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'infra')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'sensor')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'vector')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'annotation')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', resource_type = 'event')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'actuator')
-# add_URI_col(data = data, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'document', datasup = {'title': 'H2G2'})
-# generate lots of URI
-
-# usertest = User("test", "test")
-# db.session.add(usertest)
-# useradmin = User("admin", "admin")
-# db.session.add(useradmin)
-# user_je = User("jeaneudes", "pic3.14")
-# db.session.add(user_je)
-# db.session.commit()
-
-# @app.route('/test_user')
-# def test_user():
-#     query = User.query.filter_by(username = "test", password = "test" ).first()
-#     print(query.username)
-#     print(query.password)
-#     return "Object not found "
-# init dbs
-# inittest0=user_collected_URI(user = "admin", type="actuator")
-# db.session.add(inittest0)
-# db.session.commit()
-
-# inittest1=user_collected_URI(user = "admin", type="plant")
-# db.session.add(inittest1)
-# db.session.commit()
-
-# inittest2=user_collected_URI(user = "admin", type="plot")
-# db.session.add(inittest2)
-# db.session.commit()
-        
-# inittest3=user_collected_URI(user = "admin", type="pot")
-# db.session.add(inittest3)
-# db.session.commit()
-
-# inittest4=user_collected_URI(user = "admin", type="ear")
-# db.session.add(inittest4)
-# db.session.commit()
-
-# inittest5=user_collected_URI(user = "admin", type="leaf")
-# db.session.add(inittest5)
-# db.session.commit()
-
-# inittest6=user_collected_URI(user = "admin", type="sensor")
-# db.session.add(inittest6)
-# db.session.commit()
-
-# inittest7=user_collected_URI(user = "admin", type="vector")
-# db.session.add(inittest7)
-# db.session.commit()
-

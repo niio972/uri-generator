@@ -82,13 +82,13 @@ def scientificObject():
 def login():
     if request.method == 'POST':
         connexion = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
-        
         if connexion:
             session['username'] = request.form['username']
             session['logged_in'] = True
+            return redirect(url_for('home'))
         else:
             flash('wrong password!')
-        return redirect(url_for('home'))
+            return redirect(url_for('login'))
     return render_template("login.html")
 
 @app.route("/new_user", methods=['GET', 'POST'])

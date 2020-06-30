@@ -1,4 +1,5 @@
 from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from markupsafe import escape
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -17,12 +18,12 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 ### Models
-class custom_design(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.String(200), nullable=False)
-    def __repr__(self):
-        return "Design %r" %self.id
+# class custom_design(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(200), nullable=False)
+#     content = db.Column(db.String(200), nullable=False)
+#     def __repr__(self):
+#         return "Design %r" %self.id
 
 class collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,22 +40,28 @@ class user_collected_URI(db.Model):
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
-class collected_variables(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    URI = db.Column(db.String(200), nullable=False)
-    Entity = db.Column(db.String(50), nullable=False)
-    Quality = db.Column(db.String(50), nullable=False)
-    Method = db.Column(db.String(50), nullable=False)
-    Unit = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    def __repr__(self):
-        return "Variable %r" %self.id
+# class collected_variables(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     URI = db.Column(db.String(200), nullable=False)
+#     Entity = db.Column(db.String(50), nullable=False)
+#     Quality = db.Column(db.String(50), nullable=False)
+#     Method = db.Column(db.String(50), nullable=False)
+#     Unit = db.Column(db.String(50), nullable=False)
+#     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+#     def __repr__(self):
+#         return "Variable %r" %self.id
 
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
-    password = db.Column(db.String)
+    # password = db.Column(db.String)
+    password_hash =db.Column(db.String)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 ### Menu
 @app.route('/', methods=['GET', 'POST'])
@@ -81,20 +88,20 @@ def scientificObject():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        connexion = User.query.filter_by(username = request.form['username'], password = request.form['password'] ).first()
-        if connexion:
-            session['username'] = request.form['username']
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        else:
-            flash('wrong password!')
+        user = User.query.filter_by(username=request.form['username']).first()
+        if user is None or not user.check_password(request.form['password']):
+            flash('Invalid username or password')
             return redirect(url_for('login'))
+        session['username'] = request.form['username']
+        session['logged_in'] = True
+        return redirect(url_for('home'))
     return render_template("login.html")
 
 @app.route("/new_user", methods=['GET', 'POST'])
 def create_user():
     if request.method=='POST':
-        new_user = User(username = request.form['user'], password = request.form['password'])
+        new_user = User(username = request.form['user'])
+        new_user.set_password(request.form['password'])
         db.session.add(new_user)
         # init dbs
         init0=user_collected_URI(user = request.form['user'], type="actuator")
@@ -500,7 +507,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     data = data.assign(URI = datURI)
     return data
 # DEBUG
-# bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=2)
+bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
 # data = pd.read_csv('ao_mau17.csv', sep=";")
 # add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
 # URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})

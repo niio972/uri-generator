@@ -130,6 +130,9 @@ def logout():
     session['logged_in'] = False
     return redirect(url_for('home'))
 
+@app.route("/get_started")
+def get_started():
+    return render_template("get_started.html", username = session['username'],  statut = session['logged_in'])
 ### 
 ##Generation
 @app.route("/uri/experiment")
@@ -333,6 +336,8 @@ def download(filename):
         table = collected_variables.query.all()
         pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
         return send_file("download/"+filename+".csv")
+    if "example" in filename:
+        return send_file("download/"+filename)
 
 ### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
@@ -507,7 +512,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     data = data.assign(URI = datURI)
     return data
 # DEBUG
-bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
+# bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
 # data = pd.read_csv('ao_mau17.csv', sep=";")
 # add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
 # URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})

@@ -18,7 +18,11 @@ python3 flask run
 The app uses the default name app.py
 
 You will need to install the appropriate libraries. To do so *conda* environment or *venv* are suitable.  
-*(can you read the environment linked to this project?)*
+you can read the requirements;txt file and install all the dependancies.  
+
+ ``` bash
+ pip install -r requirements.txt
+ ```
 
 ## Adapt it  
 

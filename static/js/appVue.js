@@ -7,7 +7,7 @@ var app = new Vue({
     segments: [],
     resource_type: "plant",
     supl_data: {
-      "year": ['plant', 'plot', 'pot', 'leaf', 'ear', 'sensor', 'vector', 'actuator', 'data', 'image'],
+      "year": ['event', 'annotation', 'plant', 'plot', 'pot', 'leaf', 'ear', 'sensor', 'vector', 'actuator', 'data', 'image'],
       "project":['plant', 'plot', 'pot', 'leaf', 'ear', 'project'],
       "relative_plant":['leaf', 'ear'] 
     }

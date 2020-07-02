@@ -433,7 +433,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
     
     if resource_type == "annotation":
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + "id/annotation/" + Hash
+        finalURI = finalURI + "id/annotation/"+ year + "/" + Hash
 
     if resource_type == "actuator":
         finalURI = finalURI + year + "/a" + year[2:]+ str(lastvalue).rjust(6, "0")
@@ -452,7 +452,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 
     if resource_type == "event":
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
-        finalURI = finalURI + "id/event/" + Hash
+        finalURI = finalURI + "id/event/" + year + "/" + Hash
 
     if resource_type == "image":
         Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()

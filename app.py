@@ -12,18 +12,18 @@ import pandas as pd
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
-""" CORS(app, resources={r'/*': {'origins': '*'}}) """
+# """ CORS(app, resources={r'/*': {'origins': '*'}}) """
 db = SQLAlchemy(app)
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
 
 ### Models
-# class custom_design(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(200), nullable=False)
-#     content = db.Column(db.String(200), nullable=False)
-#     def __repr__(self):
-#         return "Design %r" %self.id
+class custom_design(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.String(200), nullable=False)
+    def __repr__(self):
+        return "Design %r" %self.id
 
 class collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,16 +40,16 @@ class user_collected_URI(db.Model):
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
-# class collected_variables(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     URI = db.Column(db.String(200), nullable=False)
-#     Entity = db.Column(db.String(50), nullable=False)
-#     Quality = db.Column(db.String(50), nullable=False)
-#     Method = db.Column(db.String(50), nullable=False)
-#     Unit = db.Column(db.String(50), nullable=False)
-#     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-#     def __repr__(self):
-#         return "Variable %r" %self.id
+class collected_variables(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    URI = db.Column(db.String(200), nullable=False)
+    Entity = db.Column(db.String(50), nullable=False)
+    Quality = db.Column(db.String(50), nullable=False)
+    Method = db.Column(db.String(50), nullable=False)
+    Unit = db.Column(db.String(50), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    def __repr__(self):
+        return "Variable %r" %self.id
 
 class User(db.Model):
     __tablename__ = "users"
@@ -309,7 +309,6 @@ def execute_request(subpath):
     except:
         return "There was an error, try again"
     return redirect(url_for('success'))
-    #return 'Creating the folllowing URI %s' % escape(session['URI']) + "for host" + escape(session['hostname'])
 
 @app.route("/your_collection")
 def your_collection():

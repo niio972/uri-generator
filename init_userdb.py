@@ -65,90 +65,55 @@ user_je.set_password("pic3.14")
 db.session.add(user_je)
 db.session.commit()
 
+inittest0=user_collected_URI(user = "admin", type="actuator")
+db.session.add(inittest0)
 inittest1=user_collected_URI(user = "admin", type="plant")
 db.session.add(inittest1)
-db.session.commit()
-
 inittest2=user_collected_URI(user = "admin", type="plot")
 db.session.add(inittest2)
 db.session.commit()
-        
 inittest3=user_collected_URI(user = "admin", type="pot")
 db.session.add(inittest3)
-db.session.commit()
-
 inittest4=user_collected_URI(user = "admin", type="ear")
 db.session.add(inittest4)
-db.session.commit()
-
 inittest5=user_collected_URI(user = "admin", type="leaf")
 db.session.add(inittest5)
-db.session.commit()
-
 inittest6=user_collected_URI(user = "admin", type="sensor")
 db.session.add(inittest6)
-db.session.commit()
-
 inittest7=user_collected_URI(user = "admin", type="vector")
 db.session.add(inittest7)
-db.session.commit()
-
 #test
-
+inittestà=user_collected_URI(user = "test", type="actuator")
+db.session.add(inittest0)
 inittest1=user_collected_URI(user = "test", type="plant")
 db.session.add(inittest1)
-db.session.commit()
-
 inittest2=user_collected_URI(user = "test", type="plot")
 db.session.add(inittest2)
-db.session.commit()
-        
 inittest3=user_collected_URI(user = "test", type="pot")
 db.session.add(inittest3)
-db.session.commit()
-
 inittest4=user_collected_URI(user = "test", type="ear")
 db.session.add(inittest4)
-db.session.commit()
-
 inittest5=user_collected_URI(user = "test", type="leaf")
 db.session.add(inittest5)
-db.session.commit()
-
 inittest6=user_collected_URI(user = "test", type="sensor")
 db.session.add(inittest6)
-db.session.commit()
-
 inittest7=user_collected_URI(user = "test", type="vector")
 db.session.add(inittest7)
-db.session.commit()
-
 #JE
-
+inittest0=user_collected_URI(user = "jeaneudes", type="actuator")
+db.session.add(inittest0)
 inittest1=user_collected_URI(user = "jeaneudes", type="plant")
 db.session.add(inittest1)
-db.session.commit()
-
 inittest2=user_collected_URI(user = "jeaneudes", type="plot")
 db.session.add(inittest2)
-db.session.commit()
-        
 inittest3=user_collected_URI(user = "jeaneudes", type="pot")
 db.session.add(inittest3)
-db.session.commit()
-
 inittest4=user_collected_URI(user = "jeaneudes", type="ear")
 db.session.add(inittest4)
-db.session.commit()
-
 inittest5=user_collected_URI(user = "jeaneudes", type="leaf")
 db.session.add(inittest5)
-db.session.commit()
-
 inittest6=user_collected_URI(user = "jeaneudes", type="sensor")
 db.session.add(inittest6)
-db.session.commit()
-
 inittest7=user_collected_URI(user = "jeaneudes", type="vector")
 db.session.add(inittest7)
 db.session.commit()

@@ -55,12 +55,12 @@ Import dataset
       <div v-if="supl_data.project.includes(resource_type)">
          <label for="project">Project related</label> <br>
          <input type=text name="project"  value="aProject"> <br>
-         alternative : lire le csv et récupérer la donnée dans le csv
+         <!-- alternative : lire le csv et récupérer la donnée dans le csv -->
       </div>
       <div v-if="supl_data.year.includes(resource_type)">
          <label for="year">Year</label> <br>
          <input type=text name="year" label = "Year" value="2020"> <br>
-      alternative : lire le csv et récupérer la donnée dans le csv
+      <!-- alternative : lire le csv et récupérer la donnée dans le csv -->
       </div>
 
       <div v-if="supl_data.relative_plant.includes(resource_type)">
@@ -68,17 +68,13 @@ Import dataset
          <input type=text name="relplant" label = "relPlant" value="Related_plant"> <br>    
       </div>
       <div v-if="resource_type === 'species'">
-         <p>alternative : lire le csv et récupérer la donnée dans le csv du nom exact de variable</p>
+         <!-- <p>alternative : lire le csv et récupérer la donnée dans le csv du nom exact de variable</p> -->
          <label for="species">Species column</label> <br>
          <input type=text name="species" label = "species" value="Species"> <br>   
       </div>
      
    </div>
    
-   
-    Reuse ID
-    What ID ?
-
    <br>
    <button type=submit class="btn btn-primary">
       Generate URI

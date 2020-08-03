@@ -5,6 +5,19 @@
 {% block content %}
 {{super()}}
   <h2>Home</h2>
+
+  {% if statut  %}
+  <p style="color:coral; width: 30%; font-size: 20px;">
+    Connected as {{username}}
+  </p>
+  {% endif %}
+  {% if not statut %}
+  <p style="color:coral; width: 30%; font-size: 20px;">
+    Not connected !
+  </p>
+  {% endif %}
+  
+
   <p class="important">
     Welcome to PHIS URI generator. This tool is meant to generate different URI for your data.
   </p> 
@@ -19,25 +32,20 @@
     <a href="{{ url_for('data') }}" class="navbar-item">Data</a>
     <a href="{{ url_for('method') }}" class="navbar-item">Method</a> 
   </div>
-    <br>
-    {% if statut  %}
-    <p style=" background-color: gainsboro ; color:coral; width: 30%;">
-      Connected as {{username}}
-    </p>
-    {% endif %}
-    {% if not statut %}
-    <p style=" background-color: gainsboro ; color:coral; width: 30%;">
-      Not connected !
-    </p>
-    {% endif %}
-    
+
     <br>
     <b>Important!</b>
     <p>
       You might very well already have identifiers with suitable complexity and fullfiling the requirements of your own system. <br>
     In order to be plainly interoperable with other information system in the EPPN2020 network, what was proposed is to prefix your existing identifiers.
     </p>
-    You can suggest this in the <a href="/new_schema">Alternative Schema</a>
+    You can enrich your identifier here : <a href="/existing_id">I already have an ID</a>
+  
+    <br> <br>
 
+    <p style="font-size: 18px;">
+      First time here ? Check the <a href="{{url_for('get_started')}}">Get Started</a> page!
+    </p>
+    
     
 {% endblock %}

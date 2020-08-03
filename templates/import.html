@@ -3,9 +3,11 @@
 Import dataset
 {% endblock %}
 {% block content %}
-
+<h2>Generate new URI</h2>
 <form method="post" enctype="multipart/form-data">
-   <label for="file">Import your file</label>
+   <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Num%C3%A9ro_1.jpg" alt="n1" width="50" height="50"> 
+   <label for="file">Import your file</label> <br>
+   A file with one row for each resource you want to generate a URI for. <br>
    <input type="file" name="file" id="file">
    <p>Details: <i v-on:click="toggleDetails()" class="arrow down"></i></p> <br>
    <div v-if="Details" style="background-color: ivory; margin-left: 50px;">
@@ -21,8 +23,8 @@ Import dataset
       <label for="skiprow">Number of rows to skip (no data, but comment in the first ___ rows)</label> <br>
       <input type="text" id="skiprow" name="skiprow" value="0">   
    </div>
-   ______________
    <div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Num%C3%A9ro_2.jpg" alt="n2" width="50" height="50"> 
    <label for="hostname">Host Name</label> <br>
    <input type=text name="hostname" value="{{username}}"> <br>
    <label>Installation name</label> <br>
@@ -48,14 +50,13 @@ Import dataset
    </select> <br>
    </div>
    
-   ______________
    <div id="additional_data">
-
-      <h3>Additionnal Data</h3>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Num%C3%A9ro_3.jpg" alt="n3" width="50" height="50">
+      <label>Additionnal Data</label>
       <div v-if="supl_data.project.includes(resource_type)">
          <label for="project">Project related</label> <br>
          <input type=text name="project"  value="aProject"> <br>
-         <!-- alternative : lire le csv et récupérer la donnée dans le csv -->
+
       </div>
       <div v-if="supl_data.year.includes(resource_type)">
          <label for="year">Year</label> <br>

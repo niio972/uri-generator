@@ -239,8 +239,7 @@ def existing_id():
             return redirect("import_dataset.html")
         f.save('uploads/uploaded_file.csv')
         dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
-        if request.form.get('resource_type') in ['leaf', 'ear']:
-            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
+        dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
 
         dataset_URI.to_csv('uploads/export_URI_existing_ID.csv')
         return send_file('uploads/export_URI_existing_ID.csv')
@@ -535,6 +534,10 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     if(resource_type =="species"): 
         for l in range(0,len(data)):
             datURI.append(URIgenerator_series(host = host, installation = installation, year = year, resource_type = resource_type, datasup = {'species':data.eval(datasup)[l]}))
+
+    if(resource_type =="existing"): 
+        for l in range(0,len(data)):
+            datURI.append(URIgenerator_series(host = host, installation = installation, resource_type = resource_type, datasup = {'identifier':data.eval(datasup)[l]}))
 
     data = data.assign(URI = datURI)
     return data

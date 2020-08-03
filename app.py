@@ -74,15 +74,15 @@ def home():
 
 @app.route("/variable/")
 def variable():
-    return render_template("variable.html")
+    return render_template("variable.html", statut = session['logged_in'])
     
 @app.route("/device")
 def device():
-    return render_template("device.html")
+    return render_template("device.html", statut = session['logged_in'])
 
 @app.route("/scientificObject/")
 def scientificObject():
-    return render_template("scientificObject.html")
+    return render_template("scientificObject.html", statut = session['logged_in'])
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -94,7 +94,7 @@ def login():
         session['username'] = request.form['username']
         session['logged_in'] = True
         return redirect(url_for('home'))
-    return render_template("login.html")
+    return render_template("login.html", statut = session['logged_in'])
 
 @app.route("/new_user", methods=['GET', 'POST'])
 def create_user():
@@ -104,20 +104,20 @@ def create_user():
         db.session.add(new_user)
         # init dbs
         init0=user_collected_URI(user = request.form['user'], type="actuator")
-        db.session.add(init0)
         init1=user_collected_URI(user = request.form['user'], type="plant")
-        db.session.add(init1)
         init2=user_collected_URI(user = request.form['user'], type="plot")
-        db.session.add(init2)
         init3=user_collected_URI(user = request.form['user'], type="pot")
-        db.session.add(init3)
         init4=user_collected_URI(user = request.form['user'], type="ear")
-        db.session.add(init4)
         init5=user_collected_URI(user = request.form['user'], type="leaf")
-        db.session.add(init5)
         init6=user_collected_URI(user = request.form['user'], type="sensor")
-        db.session.add(init6)
         init7=user_collected_URI(user = request.form['user'], type="vector")
+        db.session.add(init0)
+        db.session.add(init1)
+        db.session.add(init2)
+        db.session.add(init3)
+        db.session.add(init4)
+        db.session.add(init5)
+        db.session.add(init6)
         db.session.add(init7)
         db.session.commit()
         return redirect(url_for('login'))
@@ -136,43 +136,43 @@ def get_started():
 ##Generation
 @app.route("/uri/experiment")
 def experiment():
-    return render_template("experiment.html")
+    return render_template("experiment.html", statut = session['logged_in'])
 
 @app.route("/uri/document/")
 def document():
-   return render_template("document.html")
+   return render_template("document.html", statut = session['logged_in'])
 
 @app.route("/uri/sensor/")
 def sensor():
-   return render_template("sensor.html")
+   return render_template("sensor.html", statut = session['logged_in'])
 
 @app.route("/uri/vector/")
 def vector():
-   return render_template("vector.html")
+   return render_template("vector.html", statut = session['logged_in'])
 
 @app.route("/uri/plant/")
 def plant():
-   return render_template("plant.html")
+   return render_template("plant.html", statut = session['logged_in'])
 
 @app.route("/uri/pot/")
 def pot():
-   return render_template("pot.html")
+   return render_template("pot.html", statut = session['logged_in'])
 
 @app.route("/uri/ear/")
 def ear():
-   return render_template("ear.html")
+   return render_template("ear.html", statut = session['logged_in'])
 
 @app.route("/uri/leaf/")
 def leaf():
-   return render_template("leaf.html")
+   return render_template("leaf.html", statut = session['logged_in'])
 
 @app.route("/uri/data/")
 def data():
-   return render_template("data.html")
+   return render_template("data.html", statut = session['logged_in'])
 
 @app.route("/uri/method/")
 def method():
-   return render_template("method.html")
+   return render_template("method.html", statut = session['logged_in'])
 ### 
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
@@ -217,6 +217,40 @@ def import_dataset():
         else:
             return render_template("import.html", username = session['username'], installation = 'your installation', statut = session['logged_in'])    
 
+@app.route('/existing_ID', methods = ['GET', 'POST'])
+def existing_id():
+    if request.method == 'POST':
+        session['hostname'] = request.form['hostname']
+        session['installation'] = request.form['installation']  
+        if 'sep' in request.form:
+            SepSetting=request.form.get('sep')
+        else:
+            SepSetting=","
+        if 'skiprow' in request.form:
+            skipSetting=int(request.form['skiprow'])
+        else: 
+            skipSetting=0
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect("import_dataset.html")
+        f = request.files['file']
+        if f.filename == '':
+            flash('No selected file')
+            return redirect("import_dataset.html")
+        f.save('uploads/uploaded_file.csv')
+        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        if request.form.get('resource_type') in ['leaf', 'ear']:
+            dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
+
+        dataset_URI.to_csv('uploads/export_URI_existing_ID.csv')
+        return send_file('uploads/export_URI_existing_ID.csv')
+    else:
+        if 'installation' in session:
+            return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
+        else:
+            return render_template("existing.html", username = session['username'], installation = 'your installation', statut = session['logged_in'])    
+
+
 ### Actions
 @app.route("/create_variable/", methods=['GET', 'POST'])
 def create_variable():
@@ -237,11 +271,11 @@ def create_variable():
             return "There was an error, try again"
         return redirect(url_for('success'))
     else:
-        return render_template("create_variable.html")
+        return render_template("create_variable.html", statut = session['logged_in'])
 
 @app.route('/success')
 def success():
-    return render_template("success.html")
+    return render_template("success.html", statut = session['logged_in'])
     #return   'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI'])
 
 @app.route('/new_schema', methods=['GET', 'POST'])
@@ -259,7 +293,7 @@ def new_schema():
             return "There was an error, try again"
         return redirect("/new_schema")
     else:
-        return render_template("new_schema.html", designs = designs, key = key)
+        return render_template("new_schema.html", designs = designs, key = key, statut = session['logged_in'])
 
 @app.route('/delete/<path:subpath>/<int:id>')
 def delete(id, subpath):
@@ -312,7 +346,7 @@ def execute_request(subpath):
 @app.route("/your_collection")
 def your_collection():
     collections = collected_URI.query.all()
-    return render_template("your_collection.html", collections=collections)
+    return render_template("your_collection.html", collections=collections, statut = session['logged_in'])
 
 @app.route("/your_database")
 def your_database():
@@ -322,7 +356,7 @@ def your_database():
 @app.route("/your_variables")
 def your_variables():
     variables = collected_variables.query.all()
-    return render_template("your_variables.html", variables=variables)
+    return render_template("your_variables.html", variables=variables, statut = session['logged_in'])
 
 @app.route('/data/<path:filename>')
 def download(filename):
@@ -336,6 +370,10 @@ def download(filename):
         return send_file("download/"+filename+".csv")
     if "example" in filename:
         return send_file("download/"+filename)
+
+@app.route('/export_all_database')
+def export_all_db():
+    return(send_file('custom_design.db'))
 
 ### Functions
 def URIgenerator(host, installation, resource_type, year="", project="", data={}):
@@ -414,35 +452,22 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         host = host + "/" # Ensure host url ends with a slash
     finalURI = host + installation + "/"
 
-    # cas où local infra existe ou pas
-    # if resource_type == "installation":
-    #     finalURI = finalURI  
-
-    # if resource_type == "infra":
-    #     finalURI = finalURI
-
-    # if resource_type == "project":
-    #     finalURI = finalURI + project
-
-    # if resource_type == "experiment":
-    #     finalURI = finalURI + experiment
-
     if resource_type == "agent":
         finalURI = finalURI + "id/agent/" + datasup["agentName"]
     
     if resource_type == "annotation":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        Hash = hashlib.sha224(str(random.random()).encode("utf-8")).hexdigest()
         finalURI = finalURI + "id/annotation/"+ year + "/" + Hash
 
     if resource_type == "actuator":
         finalURI = finalURI + year + "/a" + year[2:]+ str(lastvalue).rjust(6, "0")
     
     if resource_type == "document":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        Hash = hashlib.sha224(str(random.random()).encode("utf-8")).hexdigest()
         finalURI = finalURI + "documents/document" + Hash
 
     if resource_type == "data":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        Hash = hashlib.sha224(str(random.random()).encode("utf-8")).hexdigest()
         finalURI = finalURI + year + "/data/" + Hash
     
     if resource_type == "ear":
@@ -450,11 +475,11 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
         finalURI = finalURI + year + "/" + project + "/" + relPlant + "/ea" + year[2:]+ str(lastvalue).rjust(6, "0") 
 
     if resource_type == "event":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        Hash = hashlib.sha224(str(random.random()).encode("utf-8")).hexdigest()
         finalURI = finalURI + "id/event/" + year + "/" + Hash
 
     if resource_type == "image":
-        Hash = hashlib.sha224(str(random.randrange(0,1001)).encode("utf-8")).hexdigest()
+        Hash = hashlib.sha224(str(random.random()).encode("utf-8")).hexdigest()
         finalURI = finalURI + year + "/image/" + Hash
 
     if resource_type == "plant":
@@ -478,6 +503,10 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
     
     if resource_type == "vector":
         finalURI = finalURI + year + "/ve" + year[2:] + str(lastvalue).rjust(6, "0")
+
+    if resource_type == "existing":
+        relPlant = datasup['identifier']
+        finalURI = finalURI + relPlant
 
     return finalURI
 
@@ -509,6 +538,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
     data = data.assign(URI = datURI)
     return data
+
 # DEBUG
 # bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
 # data = pd.read_csv('ao_mau17.csv', sep=";")

@@ -1,9 +1,7 @@
 from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from markupsafe import escape
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
 import hashlib
 import requests
 import random
@@ -12,10 +10,7 @@ import pandas as pd
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
-# """ CORS(app, resources={r'/*': {'origins': '*'}}) """
 db = SQLAlchemy(app)
-# if __name__ == "__main__":
-#     app.run(debug=True)
 
 ### Models
 class custom_design(db.Model):
@@ -275,7 +270,6 @@ def create_variable():
 @app.route('/success')
 def success():
     return render_template("success.html", statut = session['logged_in'])
-    #return   'Creating the following '+ session['subpath'] +' URI %s' % escape(session['URI'])
 
 @app.route('/new_schema', methods=['GET', 'POST'])
 def new_schema():
@@ -541,6 +535,9 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
     data = data.assign(URI = datURI)
     return data
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=False, threaded=True, port=5000)
 
 # DEBUG
 # bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)

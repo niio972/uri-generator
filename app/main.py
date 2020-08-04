@@ -6,7 +6,9 @@ import hashlib
 import requests
 import random
 import pandas as pd
-
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+# OS join
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
@@ -189,8 +191,8 @@ def import_dataset():
         if f.filename == '':
             flash('No selected file')
             return redirect("import_dataset.html")
-        f.save('uploads/uploaded_file.csv')
-        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        f.save(dir_path +'/uploads/uploaded_file.csv')
+        dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
         if request.form.get('resource_type') in ['leaf', 'ear']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         
@@ -204,8 +206,8 @@ def import_dataset():
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
 
-        dataset_URI.to_csv('uploads/export_URI'+request.form.get('resource_type')  +'.csv')
-        return send_file('uploads/export_URI'+request.form['resource_type']  +'.csv')
+        dataset_URI.to_csv(dir_path+'/uploads/export_URI'+request.form.get('resource_type')  +'.csv')
+        return send_file(dir_path+'/uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -232,12 +234,12 @@ def existing_id():
         if f.filename == '':
             flash('No selected file')
             return redirect("import_dataset.html")
-        f.save('uploads/uploaded_file.csv')
-        dataset = pd.read_csv('uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        f.save(dir_path+'/uploads/uploaded_file.csv')
+        dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
 
-        dataset_URI.to_csv('uploads/export_URI_existing_ID.csv')
-        return send_file('uploads/export_URI_existing_ID.csv')
+        dataset_URI.to_csv(dir_path+'/uploads/export_URI_existing_ID.csv')
+        return send_file(dir_path+'/uploads/export_URI_existing_ID.csv')
     else:
         if 'installation' in session:
             return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -355,14 +357,14 @@ def your_variables():
 def download(filename):
     if filename == "export_URI":
         table = collected_URI.query.all()
-        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv("download/export_URI.csv", index=False)
-        return send_file("download/"+filename+".csv")
+        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(dir_path+"/downoad/export_URI.csv", index=False)
+        return send_file(dir_path+"/downoad/"+filename+".csv")
     if filename == "export_variable":
         table = collected_variables.query.all()
-        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv("download/export_variable.csv", index=False)
-        return send_file("download/"+filename+".csv")
+        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv(dir_path+"/downoad/export_variable.csv", index=False)
+        return send_file(dir_path+"/downoad/"+filename+".csv")
     if "example" in filename:
-        return send_file("download/"+filename)
+        return send_file(dir_path+"/downoad/"+filename)
 
 @app.route('/export_all_database')
 def export_all_db():
@@ -537,7 +539,7 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, threaded=True, port=5000)
+    app.run(host='0.0.0.0', debug=False, threaded=True, port=3838)
 
 # DEBUG
 # bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)

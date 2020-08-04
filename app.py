@@ -544,6 +544,6 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
 # DEBUG
 # bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
-# data = pd.read_csv('ao_mau17.csv', sep=";")
+# data = pd.read_csv('download/example_plot.csv', sep="\t")
 # add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
 # URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})

@@ -6,7 +6,6 @@ RUN chmod +rwx /app
 ENV STATIC_INDEX 0
 ENV LISTEN_PORT 5000
 EXPOSE 5000
-WORKDIR /app
-RUN pip install -r requirements.txt
+RUN pip install -r app/requirements.txt
 ENTRYPOINT [ "python" ]
 CMD ["app/main.py"]

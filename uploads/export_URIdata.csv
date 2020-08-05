@@ -1,6 +1,0 @@
-,rdfType,label,brand,serialNumber,inServiceDate,dateOfPurchase,personInCharge,URI
-0,http://www.opensilex.org/vocabulary/oeso#Vector,ensol0001,EnviroSCAN,01BD1DD71500001,2013-01-01,2014-01-01,florence.meunier@inra.fr,test/m3p/2020/data/fe70a6d7351af307313b85eaff79287b17d90e3e87315093bf724315
-1,http://www.opensilex.org/vocabulary/oeso#Vector,ensol0002,EnviroSCAN,01BD1DD71500001,2013-01-01,2014-01-01,florence.meunier@inra.fr,test/m3p/2020/data/573948d6bfba623a6b77ade42bb7494e3c9f26d280fa64d674e46c96
-2,http://www.opensilex.org/vocabulary/oeso#Vector,ensol0003,EnviroSCAN,01BD1DD71500001,2013-01-01,2014-01-01,florence.meunier@inra.fr,test/m3p/2020/data/3a32ee9b1f17a475f19fff1621594243098a1bf2d4f06f26975f26aa
-3,http://www.opensilex.org/vocabulary/oeso#Vector,ensol0004,EnviroSCAN,01BD1DD71500001,2013-01-01,2014-01-01,florence.meunier@inra.fr,test/m3p/2020/data/f9b91488b53084bde19b9b84c80f703295144f838f120c4c5c7ef25e
-4,http://www.opensilex.org/vocabulary/oeso#Vector,ensol0005,EnviroSCAN,01BD1DD71500001,2013-01-01,2014-01-01,florence.meunier@inra.fr,test/m3p/2020/data/f46f7549f35ed4b78f355e6648b23bcf0eef5c644e57e43d526f40b1

@@ -1,0 +1,20 @@
+{% extends "generator.html" %}
+{% block title %}
+Vector
+{% endblock %}
+{% block content %}
+<h2>Create a vector</h2>
+<form class="installation", method="post"> 
+   <label>Host name</label> <br> 
+   <input type=text name="hostname"  value="your institute">   <br> 
+
+   <label>Installation name</label>   <br> 
+   <input type="text" name="installationName" value="your installation">  <br> 
+
+   <label >Which year ?</label> <br>
+   <input type="text" name="year" value="2019"> <br>
+   <button type=submit class="btn btn-primary">
+      Generate URI
+   </button>
+</form>
+{% endblock %}

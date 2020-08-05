@@ -28,6 +28,11 @@ you can read the requirements.txt file and install all the dependancies.
 
 The app is also compatible with Docker, you can build an image reading the dockerfile.
 
+``` bash
+docker build -t generator .
+docker run -d --name generatorURI -p 3838:3838 generator
+```
+
 ## Adapt it  
 
 The generator is using *jinja2* templates, it improves a base template named generator.html using :  

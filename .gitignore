@@ -1,4 +1,5 @@
 .vscode/
 __pycache__/
-generator.zip
+generator.zip/
+*.zip
 generator/

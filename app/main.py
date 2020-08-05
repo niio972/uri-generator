@@ -184,19 +184,29 @@ def import_dataset():
             skipSetting=int(request.form['skiprow'])
         else: 
             skipSetting=0
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect("import_dataset.html")
         f = request.files['file']
-        if f.filename == '':
-            flash('No selected file')
-            return redirect("import_dataset.html")
         f.save(dir_path +'/uploads/uploaded_file.csv')
+        try:
+          dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        except pd.errors.EmptyDataError:
+          flash("Invalid file, did you submit a csv file ?")
+          return redirect(url_for('import_dataset'))
         dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+
         if request.form.get('resource_type') in ['leaf', 'ear']:
+            try:
+                dataset.eval(request.form['relplant'])
+            except pd.core.computation.ops.UndefinedVariableError:
+                flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
+                return redirect(url_for("import_dataset"))
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         
         if request.form.get('resource_type') == "species":
+            try:
+                dataset.eval(request.form['species'])
+            except pd.core.computation.ops.UndefinedVariableError:
+                flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
+                return redirect(url_for("import_dataset"))
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , datasup = request.form['species'])  
         
         if request.form.get('resource_type') in ['plant', 'pot', 'plot']:
@@ -205,7 +215,6 @@ def import_dataset():
         if request.form.get('resource_type') in ['sensor', 'vector', 'data', 'image', 'event', 'annotation','actuator']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
-
         dataset_URI.to_csv(dir_path+'/uploads/export_URI'+request.form.get('resource_type')  +'.csv')
         return send_file(dir_path+'/uploads/export_URI'+request.form['resource_type']  +'.csv')
     else:
@@ -227,17 +236,20 @@ def existing_id():
             skipSetting=int(request.form['skiprow'])
         else: 
             skipSetting=0
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect("import_dataset.html")
         f = request.files['file']
-        if f.filename == '':
-            flash('No selected file')
-            return redirect("import_dataset.html")
         f.save(dir_path+'/uploads/uploaded_file.csv')
+        try:
+          dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        except pd.errors.EmptyDataError:
+          flash("Invalid file, did you submit a csv file ?")
+          return redirect(url_for('existing_id'))
         dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        try:
+            dataset.eval(request.form['identifier'])
+        except pd.core.computation.ops.UndefinedVariableError:
+          flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
+          return redirect(url_for("existing_id"))
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
-
         dataset_URI.to_csv(dir_path+'/uploads/export_URI_existing_ID.csv')
         return send_file(dir_path+'/uploads/export_URI_existing_ID.csv')
     else:
@@ -539,10 +551,10 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, threaded=True, port=3838)
+    app.run(host='0.0.0.0', debug=True, threaded=True, port=3838)
 
 # DEBUG
 # bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
-# data = pd.read_csv('download/example_plot.csv', sep="\t")
+# data = pd.read_csv('app/download/example_plot.csv', sep="\t")
 # add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
 # URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})

@@ -26,6 +26,9 @@
               <a href="{{ url_for('your_database')}}" class="navbar-item">list URI</a>            
               <a href="{{ url_for('login')}}" class="navbar-item">Change User</a>
               <a href="{{ url_for('logout')}}" class="navbar-item">Log out</a>
+              <a style="color: rgb(253, 166, 52); width: 30%; font-size: 20px;">
+                {{username}}
+              </a>
             {% endif %}
           </div>
           <!-- <div class="navbar dropdown">

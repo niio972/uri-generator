@@ -4,6 +4,18 @@ Import dataset
 {% endblock %}
 {% block content %}
 <h2>Generate new URI</h2>
+
+{% if statut  %}
+  <p style="color:coral; width: 30%; font-size: 20px;">
+    Connected as {{username}}
+  </p>
+  {% endif %}
+  {% if not statut %}
+  <p style="color:coral; width: 30%; font-size: 20px;">
+    Not connected !
+  </p>
+  {% endif %}
+
 <form method="post" enctype="multipart/form-data">
    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Num%C3%A9ro_1.jpg" alt="n1" width="50" height="50"> 
    <label for="file">Import your file</label> <br>

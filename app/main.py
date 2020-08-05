@@ -174,6 +174,11 @@ def method():
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':
+
+        if not (session['logged_in']):
+            flash('You need to be connected to use this functionnality')
+            return redirect(url_for('import_dataset'))
+
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
         if 'sep' in request.form:
@@ -226,6 +231,10 @@ def import_dataset():
 @app.route('/existing_ID', methods = ['GET', 'POST'])
 def existing_id():
     if request.method == 'POST':
+        if not (session['logged_in']):
+            flash('You need to be connected to use this functionnality')
+            return redirect(url_for('existing_id'))
+
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
         if 'sep' in request.form:

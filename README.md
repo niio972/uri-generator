@@ -23,7 +23,7 @@ you can read the requirements.txt file and install all the dependancies.
  ``` bash
  pip install -r /app/requirements.txt
  ```
- 
+
 ## Docker run
 
 The app is also compatible with Docker, you can build an image reading the dockerfile.

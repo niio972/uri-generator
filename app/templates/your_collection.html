@@ -1,0 +1,25 @@
+{% extends "generator.html" %}
+{% block title %}
+your collection
+{% endblock %}
+{% block content %}
+
+<h2>Here is a summary of the different URI you created</h2>
+
+<table class=content>
+    <tr>
+        <th>Type</th>
+        <th>URI</th>
+        <th>Action</th>
+    </tr>
+    {% for collection in collections %}
+    <tr>
+        <td>{{collection.type}}</td>
+        <td>{{collection.value}}</td>
+        <td> <a href="/delete/URI/{{collection.id}}">Delete</a>  </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<button  class="btn"><a href="data/export_URI" download=exportURI>Download</a>  </button>
+{% endblock %}

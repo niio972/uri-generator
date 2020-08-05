@@ -1,0 +1,31 @@
+{% extends "generator.html" %}
+{% block title %}
+your variables
+{% endblock %}
+{% block content %}
+
+<h2>Here is a summary of the different Variables you created</h2>
+
+<table class=content>
+    <tr>
+        <th>URI</th>
+        <th>Entity</th>
+        <th>Quality</th>
+        <th>Method</th>
+        <th>Unit</th>
+        <th>Action</th>
+    </tr>
+    {% for variable in variables %}
+    <tr>
+        <td>{{variable.URI}}</td>
+        <td>{{variable.Entity}}</td>
+        <td>{{variable.Quality}}</td>
+        <td>{{variable.Method}}</td>
+        <td>{{variable.Unit}}</td>
+        <td> <a href="/delete/variable/{{variable.id}}">Delete</a>  </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<button  class="btn"><a href="data/export_variable" download=exportVariable>Download</a>  </button>
+{% endblock %}

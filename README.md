@@ -11,7 +11,7 @@ In order to run this application locally you should clone this repository.
 Open it using VScode (or an other software) set a python terminal and run the following commands :  
 
 ``` python
-export FLASK_APP=app.py
+export FLASK_APP=main.py
 python3 flask run
 ```
 
@@ -21,8 +21,12 @@ You will need to install the appropriate libraries. To do so *conda* environment
 you can read the requirements.txt file and install all the dependancies.  
 
  ``` bash
- pip install -r requirements.txt
+ pip install -r /app/requirements.txt
  ```
+ 
+## Docker run
+
+The app is also compatible with Docker, you can build an image reading the dockerfile.
 
 ## Adapt it  
 

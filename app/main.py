@@ -190,13 +190,13 @@ def import_dataset():
         else: 
             skipSetting=0
         f = request.files['file']
-        f.save(dir_path +'/uploads/uploaded_file.csv')
+        f.save(os.path.join(dir_path ,'uploads','uploaded_file.csv'))
         try:
-          dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+          dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
           return redirect(url_for('import_dataset'))
-        dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
 
         if request.form.get('resource_type') in ['leaf', 'ear']:
             try:
@@ -220,8 +220,8 @@ def import_dataset():
         if request.form.get('resource_type') in ['sensor', 'vector', 'data', 'image', 'event', 'annotation','actuator']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
-        dataset_URI.to_csv(dir_path+'/uploads/export_URI'+request.form.get('resource_type')  +'.csv')
-        return send_file(dir_path+'/uploads/export_URI'+request.form['resource_type']  +'.csv')
+        dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
+        return send_file(os.path.join(dir_path,'uploads','export_URI'+request.form['resource_type']  +'.csv'))
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -246,21 +246,21 @@ def existing_id():
         else: 
             skipSetting=0
         f = request.files['file']
-        f.save(dir_path+'/uploads/uploaded_file.csv')
+        f.save(os.path.join(dir_path,'uploads','uploaded_file.csv'))
         try:
-          dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+          dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
           return redirect(url_for('existing_id'))
-        dataset = pd.read_csv(dir_path+'/uploads/uploaded_file.csv', sep=SepSetting, skiprows=skipSetting)
+        dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         try:
             dataset.eval(request.form['identifier'])
         except pd.core.computation.ops.UndefinedVariableError:
           flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
           return redirect(url_for("existing_id"))
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
-        dataset_URI.to_csv(dir_path+'/uploads/export_URI_existing_ID.csv')
-        return send_file(dir_path+'/uploads/export_URI_existing_ID.csv')
+        dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI_existing_ID.csv'))
+        return send_file(os.path.join(dir_path,'uploads','export_URI_existing_ID.csv'))
     else:
         if 'installation' in session:
             return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -378,14 +378,14 @@ def your_variables():
 def download(filename):
     if filename == "export_URI":
         table = collected_URI.query.all()
-        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(dir_path+"/downoad/export_URI.csv", index=False)
-        return send_file(dir_path+"/downoad/"+filename+".csv")
+        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(os.path.join(dir_path,"downoad','export_URI.csv"), index=False)
+        return send_file(os.path.join(dir_path,"downoad",filename,".csv"))
     if filename == "export_variable":
         table = collected_variables.query.all()
-        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv(dir_path+"/downoad/export_variable.csv", index=False)
-        return send_file(dir_path+"/downoad/"+filename+".csv")
+        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv(os.path.join(dir_path,'downoad','export_variable.csv'), index=False)
+        return send_file(os.path.join(dir_path,'downoad',filename,".csv"))
     if "example" in filename:
-        return send_file(dir_path+"/downoad/"+filename)
+        return send_file(os.path.join(dir_path,'downoad',filename))
 
 @app.route('/export_all_database')
 def export_all_db():

@@ -32,7 +32,8 @@ Import dataset
    
    A file with one row for each resource you want to generate a URI for. <br>
    <input type="file" name="file" id="file">
-   <p>Details: <i v-on:click="toggleDetails()" class="fas fa-angle-down"></i></p> <br>
+   <p>Details: <i v-on:click="toggleDetails()" class="fa fa-chevron-down"></i></p> <br>
+   
    <div v-if="Details" style="background-color: ivory; margin-left: 50px;">
       <label>Field separator</label> <br>      
       <input type="checkbox" id="sep_comma" name="sep" value="," checked>

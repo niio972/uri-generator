@@ -5,7 +5,7 @@ var app = new Vue({
     key_class: "primary_key",
     Details: false,
     segments: [],
-    resource_type: "plant",
+    resource_type: "plot",
     supl_data: {
       "year": ['event', 'annotation', 'plant', 'plot', 'pot', 'leaf', 'ear', 'sensor', 'vector', 'actuator', 'data', 'image'],
       "project":['plant', 'plot', 'pot', 'leaf', 'ear', 'project'],

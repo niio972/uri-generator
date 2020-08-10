@@ -8,7 +8,7 @@ import random
 import pandas as pd
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-# OS join
+
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
@@ -67,6 +67,7 @@ def home():
     if 'username' in session:
         return render_template('home.html', username = session['username'], statut = session['logged_in'])
     else:
+        session['username']=""
         return render_template('home.html', username = "", statut = session['logged_in'])
 
 @app.route("/variable/")
@@ -561,9 +562,3 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, threaded=True, port=3838)
-
-# DEBUG
-# bad_data = pd.read_csv('data_notclean.csv', sep="\t", skiprows=0, error_bad_lines=False)
-# data = pd.read_csv('app/download/example_plot.csv', sep="\t")
-# add_URI_col(data = data2, host = 'opensilex.org', installation = 'M3P', year = '2017', resource_type = 'leaf', project = 'DIA2017', datasup = 'Related_plant')
-# URIgenerator_series(host="opensilex", installation="montpel", resource_type="leaf", year = "2029", lastvalue=lastv, project="diaph", datasup={'relPlant':data2.eval(proxy)[0]})

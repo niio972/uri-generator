@@ -67,6 +67,7 @@ def home():
     if 'username' in session:
         return render_template('home.html', username = session['username'], statut = session['logged_in'])
     else:
+        session['username']=""
         return render_template('home.html', username = "", statut = session['logged_in'])
 
 @app.route("/variable/")

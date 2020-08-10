@@ -16,8 +16,8 @@
           <div class="navbar dropdown" >
             <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
             {% if not statut %}
-            <a href="get_started.html" class="navbar-item">Get started</a>
-            <a href="/login.html" class="navbar-item">Log in</a>  
+            <a href="get_started" class="navbar-item">Get started</a>
+            <a href="login" class="navbar-item">Log in</a>  
             {% endif %}
             {% if statut  %}
               <a href="{{ url_for('get_started')}}" class="navbar-item">Get started</a> 

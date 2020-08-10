@@ -9,20 +9,20 @@ get started
         In this page we will see how to easily use this application with some simple examples. <br>
         <br>
         <h3>Initialize account</h3>
-        First of all, you have to <a href="{{url_for('login')}}"> log in</a>. A TEST user (test/test) is avaliable to perform some queries and get used to it. <br>
-        But you also want to create your own user, for that,  <a href="{{url_for('create_user')}}">Create your account</a>. it will set up a new database for you.
+        First of all, you have to <a href="login"> log in</a>. A TEST user (test/test) is avaliable to perform some queries and get used to it. <br>
+        But you also want to create your own user, for that,  <a href="new_user">Create your account</a>. it will set up a new database for you.
     </p>
     
     <p>
         <h3>Test user</h3>
         Before messing your database with unintended queries and create URI you don't want, you can go have a try with the test user. <br>
         Log in with the test/test details. <br>
-        If you go to the <a href="{{url_for('your_database')}}">list URI</a> menu, you will realize that some URI have already been generated.
+        If you go to the <a href="your_database">list URI</a> menu, you will realize that some URI have already been generated.
         It's time to generate your own.
     </p>
     <p>
         <h3>Generate URI</h3>
-        To create a list of URI go to : <a href="{{url_for('import_dataset')}}">Generate URI</a> <br>
+        To create a list of URI go to : <a href="import_dataset">Generate URI</a> <br>
         <h4>Example data</h4>
         You can find some dummy data for different types of resources here :
         <li> <a href="data/example_plant.csv" download="example_plant">plant</a> </li>
@@ -60,7 +60,7 @@ get started
         It is also not possible to reuse an identifier generated in the past for a resource that do not exist anymore.
         <br> <br>
         <h4>Check your records</h4>
-        You can check what was the last value given to your uri in the <a href="{{url_for('your_database')}}">list URI</a> menu.
+        You can check what was the last value given to your uri in the <a href="your_database">list URI</a> menu.
         Some resources are not incremental (data, images, ...) and thus are using a random URI generated cryptographically. 
     
     </p> 

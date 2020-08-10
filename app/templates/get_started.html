@@ -1,0 +1,68 @@
+{% extends "generator.html" %}
+{% block title %}
+get started
+{% endblock %}
+{% block content %}
+<div style="margin-left: 3%;">
+    <h2>Get started</h2>
+    <p>
+        In this page we will see how to easily use this application with some simple examples. <br>
+        <br>
+        <h3>Initialize account</h3>
+        First of all, you have to <a href="{{url_for('login')}}"> log in</a>. A TEST user (test/test) is avaliable to perform some queries and get used to it. <br>
+        But you also want to create your own user, for that,  <a href="{{url_for('create_user')}}">Create your account</a>. it will set up a new database for you.
+    </p>
+    
+    <p>
+        <h3>Test user</h3>
+        Before messing your database with unintended queries and create URI you don't want, you can go have a try with the test user. <br>
+        Log in with the test/test details. <br>
+        If you go to the <a href="{{url_for('your_database')}}">list URI</a> menu, you will realize that some URI have already been generated.
+        It's time to generate your own.
+    </p>
+    <p>
+        <h3>Generate URI</h3>
+        To create a list of URI go to : <a href="{{url_for('import_dataset')}}">Generate URI</a> <br>
+        <h4>Example data</h4>
+        You can find some dummy data for different types of resources here :
+        <li> <a href="data/example_plant.csv" download="example_plant">plant</a> </li>
+        <li> <a href="data/example_plot.csv" download=example_plot>plot</a> </li>
+        <li> <a href="data/example_pot.csv" download=example_pot>pot</a> </li>
+        <li> <a href="data/example_sensor.csv" download=example_sensor>sensor</a> </li>
+        <li> <a href="data/example_vector.csv" download=example_vector>vector</a> </li>
+        <li> <a href="data/example_leaf.csv" download=example_leaf>leaf</a>  </li>
+        <li> <a href="data/example_ear.csv" download=example_ear>ear</a>    </li>
+        <li> <a href="data/example_actuator.csv" download=example_actuator>actuator </a> </li>
+        <li> <a href="data/example_species.csv" download=example_species>species</a>    </li>
+        There is also an example of non conventionnal table, with some comments before the table
+    </p>
+    
+    <p>
+        <h4>Data structure</h4>
+        To make it simple, this software reads the dataset you uploaded, and creates a URI for each rows of this dataset according
+        to the informations you filled in the required sections. <br>
+        This means that your table has to be "tidy". That is to say starting with a header row, followed by a row for each individuals and
+        a column for each variables.
+    </p>
+    <p>
+        <h4>Non conventionnal structure</h4>
+        If your table has some comments at the beginning, for example "Data acquired on the 15/05/2020, by Jean-Michel Saumon" you 
+        can skip this row using the argument in the "Details" section. <br>
+        The expected format for the table is the "csv" format, a classic format to manipulate data, this is very simple (just text) and 
+        use the comma (,) as a delimiter between fields. If you are not using the classic delimiter you can specify it in the "Details" section.
+       
+    </p>
+    <p>
+        <h3>Warnings</h3>
+        It is important to notice that if you submit the same dataset twice, it will give you new URI each time, increasing the incremental count 
+        of the selected resource. <br>
+        Because identifiers are meant to be persistent, it is impossible to delete an identifier once created.
+        It is also not possible to reuse an identifier generated in the past for a resource that do not exist anymore.
+        <br> <br>
+        <h4>Check your records</h4>
+        You can check what was the last value given to your uri in the <a href="{{url_for('your_database')}}">list URI</a> menu.
+        Some resources are not incremental (data, images, ...) and thus are using a random URI generated cryptographically. 
+    
+    </p> 
+</div>
+{% endblock %}

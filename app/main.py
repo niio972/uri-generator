@@ -143,7 +143,7 @@ def import_dataset():
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
-        return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv")
+        return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -182,7 +182,7 @@ def existing_id():
           return redirect(url_for("existing_id"))
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI_existing_ID.csv'))
-        return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI_existing_ID.csv'), mimetype="text/csv")
+        return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI_existing_ID.csv'), mimetype="text/csv", as_attachment=True)
     else:
         if 'installation' in session:
             return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -203,7 +203,7 @@ def download(filename):
         pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(os.path.join(dir_path,"downoad','export_URI.csv"), index=False)
         return send_from_directory(directory=dir_path, filename=os.path.join("downoad",filename,".csv"), mimetype="text/csv")
     if "example" in filename:
-        return send_from_directory(directory=dir_path, filename=os.path.join('downoad',filename), mimetype="text/csv")
+        return send_from_directory(directory=dir_path, filename=os.path.join('downoad',filename), mimetype="text/csv", as_attachment=True)
 
 @app.route('/export_all_database')
 def export_all_db():

@@ -143,9 +143,6 @@ def import_dataset():
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
-        
-        test = pd.read_csv(os.path.join(dir_path,'uploads','export_URI'+request.form['resource_type']+'.csv'))
-        print(test)
         return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
     else:
         if 'installation' in session:
@@ -311,6 +308,3 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, threaded=True, port=3838)
-
-# dataset = pd.read_csv('/home/jeaneudes/Documents/URI/generator/app/download/example_plant.csv')
-# dataset

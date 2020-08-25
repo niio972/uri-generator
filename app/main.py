@@ -34,7 +34,11 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 ### Menu
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def acc():
+    return redirect(url_for('home'))
+
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     if 'logged_in' not in session:
         session['logged_in']=False
@@ -307,4 +311,4 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, threaded=True, port=3838)
+    app.run(host='0.0.0.0',debug=True, threaded=True, port=3838)

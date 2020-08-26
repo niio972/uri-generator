@@ -1,4 +1,4 @@
-from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_from_directory, flash
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, send_from_directory, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -36,6 +36,7 @@ class User(db.Model):
 
 ### Menu
 @app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     if 'logged_in' not in session:
         session['logged_in']=False
@@ -200,7 +201,7 @@ def your_database():
 @app.route('/data/<path:filename>')
 def download(filename):
     if "example" in filename:
-        return send_from_directory(directory=dir_path, filename=os.path.join('downoad',filename), mimetype="text/csv", as_attachment=True)
+        return send_from_directory(directory=dir_path, filename=os.path.join('download',filename), mimetype="text/csv", as_attachment=True)
 
 @app.route('/export_all_database')
 def export_all_db():

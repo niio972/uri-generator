@@ -11,6 +11,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
+app.use_x_sendfile = True
 db = SQLAlchemy(app)
 
 ### Models

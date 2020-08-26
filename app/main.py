@@ -11,7 +11,6 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
-app.use_x_sendfile = True
 db = SQLAlchemy(app)
 
 ### Models
@@ -35,8 +34,8 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 ### Menu
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/home')
+@app.route('/')
 def home():
     if 'logged_in' not in session:
         session['logged_in']=False
@@ -55,7 +54,7 @@ def login():
             return redirect(url_for('login'))
         session['username'] = request.form['username']
         session['logged_in'] = True
-        return redirect(url_for('home'))
+        return redirect(url_for('home'), code=303)
     return render_template("login.html", statut = session['logged_in'])
 
 @app.route("/new_user", methods=['GET', 'POST'])
@@ -94,11 +93,11 @@ def logout():
 @app.route("/get_started")
 def get_started():
     return render_template("get_started.html", username = session['username'],  statut = session['logged_in'])
-### 
+
+### Fonctions
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':
-
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
             return redirect(url_for('import_dataset'))
@@ -146,6 +145,7 @@ def import_dataset():
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
         return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
+    
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    

@@ -8,7 +8,6 @@ import random
 import pandas as pd
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-# OS join
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
@@ -26,6 +25,7 @@ class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
+    #to avoid storage of clear text password
     password_hash =db.Column(db.String)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -34,11 +34,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 ### Menu
-@app.route('/')
-def acc():
-    return redirect(url_for('home'))
-
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     if 'logged_in' not in session:
         session['logged_in']=False
@@ -202,10 +198,6 @@ def your_database():
 
 @app.route('/data/<path:filename>')
 def download(filename):
-    if filename == "export_URI":
-        table = collected_URI.query.all()
-        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(os.path.join(dir_path,"downoad','export_URI.csv"), index=False)
-        return send_from_directory(directory=dir_path, filename=os.path.join("downoad",filename,".csv"), mimetype="text/csv")
     if "example" in filename:
         return send_from_directory(directory=dir_path, filename=os.path.join('downoad',filename), mimetype="text/csv", as_attachment=True)
 

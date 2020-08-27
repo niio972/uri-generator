@@ -203,7 +203,7 @@ def download(filename):
     if "example" in filename:
         return send_from_directory(directory=dir_path, filename=os.path.join('download',filename), mimetype="text/csv", as_attachment=True)
 
-@app.route('/export_all_database')
+@app.route('/export_all_db')
 def export_all_db():
     return(send_from_directory(directory="", filename='custom_design.db', mimetype="application/octet-stream"))
 

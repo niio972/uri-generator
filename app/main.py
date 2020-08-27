@@ -54,7 +54,7 @@ def login():
             return redirect(url_for('login'))
         session['username'] = request.form['username']
         session['logged_in'] = True
-        return redirect(url_for('home'), code=303)
+        return render_template('home.html', username = session['username'], statut = session['logged_in'])
     return render_template("login.html", statut = session['logged_in'])
 
 @app.route("/new_user", methods=['GET', 'POST'])
@@ -88,7 +88,7 @@ def create_user():
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
-    return redirect(url_for('home'))
+    return render_template('home.html', username = session['username'], statut = session['logged_in'])
 
 @app.route("/get_started")
 def get_started():
@@ -305,4 +305,4 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True, threaded=True, port=3838)
+    app.run(host='0.0.0.0',debug=False, threaded=True, port=3838)

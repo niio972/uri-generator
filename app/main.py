@@ -1,4 +1,4 @@
-from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, send_from_directory, flash
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, send_from_directory, flash, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -145,7 +145,10 @@ def import_dataset():
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
         return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
-    
+
+        # response = send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
+        # response.headers['application'] = 'text/csv'
+        # return response
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    

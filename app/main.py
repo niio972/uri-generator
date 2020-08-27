@@ -51,7 +51,7 @@ def login():
         user = User.query.filter_by(username=request.form['username']).first()
         if user is None or not user.check_password(request.form['password']):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            return render_template("login.html", statut = session['logged_in'])
         session['username'] = request.form['username']
         session['logged_in'] = True
         return render_template('home.html', username = session['username'], statut = session['logged_in'])
@@ -81,7 +81,7 @@ def create_user():
         db.session.add(init6)
         db.session.add(init7)
         db.session.commit()
-        return redirect(url_for('login'))
+        return render_template("login.html", statut = session['logged_in'])
     else:
         return render_template('new_user.html')
 
@@ -100,7 +100,7 @@ def import_dataset():
     if request.method == 'POST':
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
-            return redirect(url_for('import_dataset'))
+            return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
 
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
@@ -118,7 +118,7 @@ def import_dataset():
           dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
-          return redirect(url_for('import_dataset'))
+          return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
         dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
 
         if request.form.get('resource_type') in ['leaf', 'ear']:
@@ -126,7 +126,7 @@ def import_dataset():
                 dataset.eval(request.form['relplant'])
             except pd.core.computation.ops.UndefinedVariableError:
                 flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-                return redirect(url_for("import_dataset"))
+                return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         
         if request.form.get('resource_type') == "species":
@@ -134,7 +134,7 @@ def import_dataset():
                 dataset.eval(request.form['species'])
             except pd.core.computation.ops.UndefinedVariableError:
                 flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-                return redirect(url_for("import_dataset"))
+                return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , datasup = request.form['species'])  
         
         if request.form.get('resource_type') in ['plant', 'pot', 'plot']:
@@ -157,7 +157,7 @@ def existing_id():
     if request.method == 'POST':
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
-            return redirect(url_for('existing_id'))
+            return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
 
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
@@ -175,13 +175,13 @@ def existing_id():
           dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
-          return redirect(url_for('existing_id'))
+          return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
         dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         try:
             dataset.eval(request.form['identifier'])
         except pd.core.computation.ops.UndefinedVariableError:
           flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-          return redirect(url_for("existing_id"))
+          return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI_existing_ID.csv'))
         return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI_existing_ID.csv'), mimetype="text/csv", as_attachment=True)

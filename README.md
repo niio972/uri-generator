@@ -47,5 +47,5 @@ The generator is using *jinja2* templates, it improves a base template named gen
 To make use of this generator for your own instance, you can replace generator.html with your own page (using your own design). just make sure that the links to the different actions are accessibles.
 
 For more details about the Flask framework you can see the official documentation [here](https://flask.palletsprojects.com/en/1.1.x/)  
-For details about the VSCode implémentation see [here](https://code.visualstudio.com/docs/python/tutorial-flask)
+For details about the VSCode implémentation see [here](https://code.visualstudio.com/docs/python/tutorial-flask)  
 For additionnal questions about this app you can contact me at : jean-eudes.hollebecq@inare.fr

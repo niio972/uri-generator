@@ -1,4 +1,4 @@
-from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_from_directory, flash
+from flask import render_template, Flask, session, url_for, request, redirect, jsonify, send_file, send_from_directory, flash, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +8,6 @@ import random
 import pandas as pd
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-# OS join
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
@@ -26,6 +25,7 @@ class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
+    #to avoid storage of clear text password
     password_hash =db.Column(db.String)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -34,7 +34,8 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 ### Menu
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/home')
+@app.route('/')
 def home():
     if 'logged_in' not in session:
         session['logged_in']=False
@@ -50,10 +51,10 @@ def login():
         user = User.query.filter_by(username=request.form['username']).first()
         if user is None or not user.check_password(request.form['password']):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            return render_template("login.html", statut = session['logged_in'])
         session['username'] = request.form['username']
         session['logged_in'] = True
-        return redirect(url_for('home'))
+        return render_template('home.html', username = session['username'], statut = session['logged_in'])
     return render_template("login.html", statut = session['logged_in'])
 
 @app.route("/new_user", methods=['GET', 'POST'])
@@ -80,26 +81,26 @@ def create_user():
         db.session.add(init6)
         db.session.add(init7)
         db.session.commit()
-        return redirect(url_for('login'))
+        return render_template("login.html", statut = session['logged_in'])
     else:
         return render_template('new_user.html')
 
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
-    return redirect(url_for('home'))
+    return render_template('home.html', username = session['username'], statut = session['logged_in'])
 
 @app.route("/get_started")
 def get_started():
     return render_template("get_started.html", username = session['username'],  statut = session['logged_in'])
-### 
+
+### Fonctions
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':
-
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
-            return redirect(url_for('import_dataset'))
+            return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
 
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
@@ -117,7 +118,7 @@ def import_dataset():
           dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
-          return redirect(url_for('import_dataset'))
+          return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
         dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
 
         if request.form.get('resource_type') in ['leaf', 'ear']:
@@ -125,7 +126,7 @@ def import_dataset():
                 dataset.eval(request.form['relplant'])
             except pd.core.computation.ops.UndefinedVariableError:
                 flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-                return redirect(url_for("import_dataset"))
+                return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , project = request.form['project'], year = request.form['year'], datasup = request.form['relplant'])
         
         if request.form.get('resource_type') == "species":
@@ -133,7 +134,7 @@ def import_dataset():
                 dataset.eval(request.form['species'])
             except pd.core.computation.ops.UndefinedVariableError:
                 flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-                return redirect(url_for("import_dataset"))
+                return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , datasup = request.form['species'])  
         
         if request.form.get('resource_type') in ['plant', 'pot', 'plot']:
@@ -143,10 +144,11 @@ def import_dataset():
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
-        
-        test = pd.read_csv(os.path.join(dir_path,'uploads','export_URI'+request.form['resource_type']+'.csv'))
-        print(test)
         return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
+
+        # response = send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
+        # response.headers['application'] = 'text/csv'
+        # return response
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    
@@ -158,7 +160,7 @@ def existing_id():
     if request.method == 'POST':
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
-            return redirect(url_for('existing_id'))
+            return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
 
         session['hostname'] = request.form['hostname']
         session['installation'] = request.form['installation']  
@@ -176,13 +178,13 @@ def existing_id():
           dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         except pd.errors.EmptyDataError:
           flash("Invalid file, did you submit a csv file ?")
-          return redirect(url_for('existing_id'))
+          return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
         dataset = pd.read_csv(os.path.join(dir_path,'uploads','uploaded_file.csv'), sep=SepSetting, skiprows=skipSetting)
         try:
             dataset.eval(request.form['identifier'])
         except pd.core.computation.ops.UndefinedVariableError:
           flash("Invalid column name, or invalid field separator, verify that comma (,) is used to delimit cells, or specify the separatr in the 'Detail' section")
-          return redirect(url_for("existing_id"))
+          return render_template("existing.html", username = session['username'], installation = session['installation'], statut = session['logged_in']) 
         dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = "existing" , datasup = request.form['identifier'])
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI_existing_ID.csv'))
         return send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI_existing_ID.csv'), mimetype="text/csv", as_attachment=True)
@@ -201,14 +203,10 @@ def your_database():
 
 @app.route('/data/<path:filename>')
 def download(filename):
-    if filename == "export_URI":
-        table = collected_URI.query.all()
-        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(os.path.join(dir_path,"downoad','export_URI.csv"), index=False)
-        return send_from_directory(directory=dir_path, filename=os.path.join("downoad",filename,".csv"), mimetype="text/csv")
     if "example" in filename:
-        return send_from_directory(directory=dir_path, filename=os.path.join('downoad',filename), mimetype="text/csv", as_attachment=True)
+        return send_from_directory(directory=dir_path, filename=os.path.join('download',filename), mimetype="text/csv", as_attachment=True)
 
-@app.route('/export_all_database')
+@app.route('/export_all_db')
 def export_all_db():
     return(send_from_directory(directory="", filename='custom_design.db', mimetype="application/octet-stream"))
 
@@ -310,7 +308,4 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, threaded=True, port=3838)
-
-# dataset = pd.read_csv('/home/jeaneudes/Documents/URI/generator/app/download/example_plant.csv')
-# dataset
+    app.run(host='0.0.0.0',debug=False, threaded=True, port=3838)

@@ -14,39 +14,13 @@ app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 db = SQLAlchemy(app)
 
-### Models
-class custom_design(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.String(200), nullable=False)
-    def __repr__(self):
-        return "Design %r" %self.id
-
-class collected_URI(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200), nullable=False)
-    value = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    def __repr__(self):
-        return "URI %r" %self.id
-    
+### Models  
 class user_collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(200), nullable=False)
     type = db.Column(db.String(200), nullable=False)
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-class collected_variables(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    URI = db.Column(db.String(200), nullable=False)
-    Entity = db.Column(db.String(50), nullable=False)
-    Quality = db.Column(db.String(50), nullable=False)
-    Method = db.Column(db.String(50), nullable=False)
-    Unit = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    def __repr__(self):
-        return "Variable %r" %self.id
 
 class User(db.Model):
     __tablename__ = "users"
@@ -69,19 +43,7 @@ def home():
     else:
         session['username']=""
         return render_template('home.html', username = "", statut = session['logged_in'])
-
-@app.route("/variable/")
-def variable():
-    return render_template("variable.html", statut = session['logged_in'])
-    
-@app.route("/device")
-def device():
-    return render_template("device.html", statut = session['logged_in'])
-
-@app.route("/scientificObject/")
-def scientificObject():
-    return render_template("scientificObject.html", statut = session['logged_in'])
-    
+  
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -130,47 +92,6 @@ def logout():
 @app.route("/get_started")
 def get_started():
     return render_template("get_started.html", username = session['username'],  statut = session['logged_in'])
-### 
-##Generation
-@app.route("/uri/experiment")
-def experiment():
-    return render_template("experiment.html", statut = session['logged_in'])
-
-@app.route("/uri/document/")
-def document():
-   return render_template("document.html", statut = session['logged_in'])
-
-@app.route("/uri/sensor/")
-def sensor():
-   return render_template("sensor.html", statut = session['logged_in'])
-
-@app.route("/uri/vector/")
-def vector():
-   return render_template("vector.html", statut = session['logged_in'])
-
-@app.route("/uri/plant/")
-def plant():
-   return render_template("plant.html", statut = session['logged_in'])
-
-@app.route("/uri/pot/")
-def pot():
-   return render_template("pot.html", statut = session['logged_in'])
-
-@app.route("/uri/ear/")
-def ear():
-   return render_template("ear.html", statut = session['logged_in'])
-
-@app.route("/uri/leaf/")
-def leaf():
-   return render_template("leaf.html", statut = session['logged_in'])
-
-@app.route("/uri/data/")
-def data():
-   return render_template("data.html", statut = session['logged_in'])
-
-@app.route("/uri/method/")
-def method():
-   return render_template("method.html", statut = session['logged_in'])
 ### 
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
@@ -270,123 +191,15 @@ def existing_id():
 
 
 ### Actions
-@app.route("/create_variable/", methods=['GET', 'POST'])
-def create_variable():
-    if request.method == "POST":
-        session['Entity'] = request.form['Entity']
-        session['Quality'] = request.form['Quality']       
-        session['Method'] = request.form['Method']  
-        session['Unit'] = request.form['Unit']  
-        session['subpath'] = "variable"
-        URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type="variable")
-        session['URI'] = URI
-        
-        your_variables = collected_variables(URI = URI, Entity = session['Entity'], Quality=session['Quality'], Method = session['Method'], Unit = session['Unit'])
-        try:
-            db.session.add(your_variables)
-            db.session.commit()
-        except:
-            return "There was an error, try again"
-        return redirect(url_for('success'))
-    else:
-        return render_template("create_variable.html", statut = session['logged_in'])
-
-@app.route('/success')
-def success():
-    return render_template("success.html", statut = session['logged_in'])
-
-@app.route('/new_schema', methods=['GET', 'POST'])
-def new_schema():
-    key = key_generator()
-    designs = custom_design.query.all()
-    if request.method == "POST" and 'content-name' in request.form:
-        content_name = request.form['content-name']
-        content = request.form['content']
-        new_design = custom_design(content = content, name = content_name)
-        try:
-            db.session.add(new_design)
-            db.session.commit()
-        except:
-            return "There was an error, try again"
-        return redirect("/new_schema")
-    else:
-        return render_template("new_schema.html", designs = designs, key = key, statut = session['logged_in'])
-
-@app.route('/delete/<path:subpath>/<int:id>')
-def delete(id, subpath):
-    if subpath == "URI":
-        URI_to_delete = collected_URI.query.get_or_404(id)
-        try:
-            db.session.delete(URI_to_delete)
-            db.session.commit()
-            return redirect('/your_collection')
-        except:
-            return 'There was a problem deleting that row'
-
-    if subpath =="variable":
-        variable_to_delete = collected_variables.query.get_or_404(id)
-        try:
-            db.session.delete(variable_to_delete)
-            db.session.commit()
-            return redirect('/your_variables')
-        except:
-            return 'There was a problem deleting that variable'
-            
-    
-    else:
-        task_to_delete = custom_design.query.get_or_404(id)
-        try:
-            db.session.delete(task_to_delete)
-            db.session.commit()
-            return redirect('/new_schema')
-        except:
-            return 'There was a problem deleting that row'
-
-@app.route('/uri/<path:subpath>', methods = ['GET', 'POST'])
-def execute_request(subpath):
-    # show the subpath after /path/
-    session['subpath'] = subpath[0:-1]
-    session['hostname'] = request.form['hostname']
-    session['installationName'] = request.form['installationName']       
-    URI = URIgenerator(host = session['hostname'], installation=session['installationName'] , resource_type=session['subpath'])
-    session['URI'] = URI
-    
-    your_collection = collected_URI(value = URI, type = subpath[0:-1])
-    try:
-        db.session.add(your_collection)
-        db.session.commit()
-
-    except:
-        return "There was an error, try again"
-    return redirect(url_for('success'))
-
-@app.route("/your_collection")
-def your_collection():
-    collections = collected_URI.query.all()
-    return render_template("your_collection.html", collections=collections, statut = session['logged_in'])
-
 @app.route("/your_database")
 def your_database():
     collections = user_collected_URI.query.filter_by(user = session['username'])
     return render_template("your_database.html", collections=collections, username = session['username'], statut = session['logged_in'])
 
-@app.route("/your_variables")
-def your_variables():
-    variables = collected_variables.query.all()
-    return render_template("your_variables.html", variables=variables, statut = session['logged_in'])
-
 @app.route('/data/<path:filename>')
 def download(filename):
-    if filename == "export_URI":
-        table = collected_URI.query.all()
-        pd.DataFrame([(d.type, d.value, d.id) for d in table], columns=['type', 'value', 'id']).to_csv(os.path.join(dir_path,"downoad','export_URI.csv"), index=False)
-        return send_file(os.path.join(dir_path,"downoad",filename,".csv"))
-    if filename == "export_variable":
-        table = collected_variables.query.all()
-        pd.DataFrame([(d.URI, d.Entity, d.Quality, d.Method, d.Unit, d.id) for d in table], columns=['URI', 'Entity', "Quality", "Method", "Unit", 'id']).to_csv(os.path.join(dir_path,'downoad','export_variable.csv'), index=False)
-        return send_file(os.path.join(dir_path,'downoad',filename,".csv"))
     if "example" in filename:
-        return send_file(os.path.join(dir_path,'downoad',filename))
+        return send_file(os.path.join(dir_path,'download',filename))
 
 @app.route('/export_all_database')
 def export_all_db():

@@ -6,36 +6,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
     
         <title class='main-title'>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}" />
+        <link rel="stylesheet" type="text/css" href="static/css/style.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
     </head>
 
     <body>
         <div class="container-fluid">
           <div class="navbar dropdown" >
-            <a href="{{ url_for('home') }}" class="navbar-brand">URI generator</a>
+            <a href="home" class="navbar-brand">URI generator</a>
             {% if not statut %}
-            <a href="{{ url_for('get_started')}}" class="navbar-item">Get started</a>
-            <a href="{{ url_for('login')}}" class="navbar-item">Log in</a>  
+            <a href="get_started" class="navbar-item">Get started</a>
+            <a href="login" class="navbar-item">Log in</a>  
             {% endif %}
-            {% if statut  %}
-              <a href="{{ url_for('get_started')}}" class="navbar-item">Get started</a> 
-              <a href="{{ url_for('import_dataset')}}" class="navbar-item">Generate new URI</a>
-              <a href="{{ url_for('existing_id')}}" class="navbar-item">Enrich existing ID</a>
-              <a href="{{ url_for('your_database')}}" class="navbar-item">list URI</a>            
-              <a href="{{ url_for('login')}}" class="navbar-item">Change User</a>
-              <a href="{{ url_for('logout')}}" class="navbar-item">Log out</a>
+            {% if statut %}
+              <a href="get_started" class="navbar-item">Get started</a> 
+              <a href="import_dataset" class="navbar-item">Generate new URI</a>
+              <a href="existing_ID" class="navbar-item">Enrich existing ID</a>
+              <a href="your_database" class="navbar-item">list URI</a>            
+              <!-- <a href="login" class="navbar-item">Change User</a> -->
+              <a href="logout" class="navbar-item">Log out</a>
               <a style="color: rgb(253, 166, 52); width: 30%; font-size: 20px;">
                 {{username}}
               </a>
             {% endif %}
           </div>
-          <!-- <div class="navbar dropdown">
-            <a href="{{ url_for('variable') }}" class="navbar-brand">Variable pattern</a>
-            <a href="{{ url_for('create_variable') }}" class="navbar-item">Create variables</a>
-            <a href="{{ url_for('your_variables')}}" class="navbar-item">Your variables</a>
-          </div>  -->
             <div class="body-content" id=URI_generator>
               {% block content %}
               {% endblock %}

@@ -34,6 +34,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 ### Menu
+@app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if 'logged_in' not in session:

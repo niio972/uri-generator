@@ -308,4 +308,4 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     return data
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=False, threaded=True, port=3838)
+    app.run(host='0.0.0.0',debug=True, threaded=True, port=3838)

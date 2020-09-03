@@ -8,38 +8,12 @@ app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 db = SQLAlchemy(app)
 ########################################################################
-class custom_design(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.String(200), nullable=False)
-    def __repr__(self):
-        return "Design %r" %self.id
-
-class collected_URI(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200), nullable=False)
-    value = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    def __repr__(self):
-        return "URI %r" %self.id
-    
 class user_collected_URI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(200), nullable=False)
     type = db.Column(db.String(200), nullable=False)
     lastvalue = db.Column(db.String(200), nullable=False, default=1)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-class collected_variables(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    URI = db.Column(db.String(200), nullable=False)
-    Entity = db.Column(db.String(50), nullable=False)
-    Quality = db.Column(db.String(50), nullable=False)
-    Method = db.Column(db.String(50), nullable=False)
-    Unit = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    def __repr__(self):
-        return "Variable %r" %self.id
 
 class User(db.Model):
     __tablename__ = "users"

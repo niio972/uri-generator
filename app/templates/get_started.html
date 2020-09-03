@@ -6,18 +6,19 @@ get started
 <div style="margin-left: 3%;">
     <h2>Get started</h2>
     <p>
-        In this page we will see how to easily use this application with some simple examples. <br>
+        In this page we will see how to use this application with some simple examples. <br>
         <br>
         <h3>Initialize account</h3>
         First of all, you have to <a href="login"> log in</a>. A TEST user (test/test) is avaliable to perform some queries and get used to it. <br>
-        But you also want to create your own user, for that,  <a href="new_user">Create your account</a>. it will set up a new database for you.
+        But you also want to create your own user, for that,  <a href="new_user">Create your account</a>. 
+        A new database will be set for you after creating the new account.
     </p>
     
     <p>
         <h3>Test user</h3>
-        Before messing your database with unintended queries and create URI you don't want, you can go have a try with the test user. <br>
+        Before messing your database with unintended queries and create URI you don't want, you can have a try with the test user. <br>
         Log in with the test/test details. <br>
-        If you go to the <a href="your_database">list URI</a> menu, you will realize that some URI have already been generated.
+        If you go to the <a href="your_database">list URI</a> menu, you will realize that some URI have already been generated for the test user.
         It's time to generate your own.
     </p>
     <p>
@@ -41,13 +42,14 @@ get started
         <h4>Data structure</h4>
         To make it simple, this software reads the dataset you uploaded, and creates a URI for each rows of this dataset according
         to the informations you filled in the required sections. <br>
-        This means that your table has to be "tidy". That is to say starting with a header row, followed by a row for each individuals and
-        a column for each variables.
+        This means that your table has to be "tidy". That is to say starting with a header row (names of columns), followed by a row for each individuals (plant n°1, plant N°2, etc) and
+        a column for each variables (label, genotype, variety, etc).
     </p>
     <p>
         <h4>Non conventionnal structure</h4>
         If your table has some comments at the beginning, for example "Data acquired on the 15/05/2020, by Jean-Michel Saumon" you 
         can skip this row using the argument in the "Details" section. <br>
+        &nbsp; &nbsp; <i>Remarque: you should have the metadata in a separate file/sheet and link the two together instead of mixing everything</i> <br>
         The expected format for the table is the "csv" format, a classic format to manipulate data, this is very simple (just text) and 
         use the comma (,) as a delimiter between fields. If you are not using the classic delimiter you can specify it in the "Details" section.
        

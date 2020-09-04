@@ -4,7 +4,7 @@ Import dataset
 {% endblock %}
 {% block content %}
 <h2>Generate new URI</h2>
-Provide a csv table of your data. expected format is the following <li> <a href="data/example_plant.csv" download="example_plant">example data</a> </li>
+Provide a csv table of your data. Expected format is the <a href="data/example_plant.csv" download="example_plant">following </a>.
 {% if statut  %}
   <p style="color:coral; width: 30%; font-size: 20px;">
     Connected as {{username}}
@@ -16,7 +16,7 @@ Provide a csv table of your data. expected format is the following <li> <a href=
   </p>
   {% endif %}
 
-<form method="post" enctype="multipart/form-data" action="import_dataset">
+<form method="post" enctype="multipart/form-data" action="/import_dataset">
    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Num%C3%A9ro_1.jpg" alt="n1" width="50" height="50"> 
    <label for="file">Import your file</label> <br>
 
@@ -100,10 +100,57 @@ Provide a csv table of your data. expected format is the following <li> <a href=
    </div>
    
    <br>
-   <button type=submit class="btn btn-primary">
+   <button type=submit class="btn btn-primary" id="upload_csv">
       Generate URI
    </button>
 
+
+   <script>
+// ca ressemble à l'upload
+$(document).ready(function(){
+   $('#upload_csv').on('submit', function(event){
+      event.preventDefault();
+      $.ajax({
+         url:"import.php",
+         method:"POST",
+         data:new FormData(this),
+         dataType:'json',
+         contentType:false,
+         cache:false,
+         processData:false,
+         success:function(jsonData)
+         {
+         $('#csv_file').val('');
+         $('#data-table').DataTable({
+            data  :  jsonData,
+            columns :  [
+               { data : "student_id" },
+               { data : "student_name" },
+               { data : "student_phone" }
+            ]
+         });
+         }
+      });
+   });
+});
+   </script>
+<!--  ca c'est plutôt du download -->
+   <!-- <script >
+      $(".btn btn-primary").on("click", function(){
+    $.ajax({
+        type: 'GET',
+        url: '/downloadFile',
+        contentType: 'csv',
+        cache: false,
+        processData: false,
+        async: false,
+        success: function(data) {
+            console.log("coming");
+        },
+    });
+   });
+   </script> -->
+<br>
    <i>You can find the file in your Download folder (default settings)</i>
 </form> 
 {% endblock %}

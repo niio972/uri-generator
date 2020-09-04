@@ -97,6 +97,13 @@ def get_started():
     return render_template("get_started.html", username = session['username'],  statut = session['logged_in'])
 
 ### Fonctions
+@app.route("/essai_post")
+def essai_post():
+    f = request.files['file']  
+    f.save(f.filename)  
+    return render_template("succes.html", name = f.filename) 
+
+
 @app.route("/import_dataset", methods = ['GET', 'POST'])
 def import_dataset():
     if request.method == 'POST':

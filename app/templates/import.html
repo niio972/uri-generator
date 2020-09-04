@@ -16,7 +16,8 @@ Provide a csv table of your data. Expected format is the <a href="data/example_p
   </p>
   {% endif %}
 
-<form method="post" enctype="multipart/form-data" action="/import_dataset">
+<form method="post" enctype="multipart/form-data" action="import_dataset">
+   <!-- <form method="post" enctype="multipart/form-data" action="/import_dataset"></form> -->
    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Num%C3%A9ro_1.jpg" alt="n1" width="50" height="50"> 
    <label for="file">Import your file</label> <br>
 
@@ -100,54 +101,52 @@ Provide a csv table of your data. Expected format is the <a href="data/example_p
    </div>
    
    <br>
-   <button type=submit class="btn btn-primary" id="upload_csv">
+   <button v-on:click="charger_csv()" type=submit class="btn btn-primary" id="upload_csv" >
       Generate URI
    </button>
 
-
-   <script>
+   <p id="successAlert" style="display:none;">Success!</p>
+   <p id="errorAlert" style="display:none;">Fail!</p>
+   
+   <!-- <script>
 // ca ressemble à l'upload
-$(document).ready(function(){
-   $('#upload_csv').on('submit', function(event){
-      event.preventDefault();
-      $.ajax({
-         url:"import.php",
-         method:"POST",
-         data:new FormData(this),
-         dataType:'json',
-         contentType:false,
-         cache:false,
-         processData:false,
-         success:function(jsonData)
-         {
-         $('#csv_file').val('');
-         $('#data-table').DataTable({
-            data  :  jsonData,
-            columns :  [
-               { data : "student_id" },
-               { data : "student_name" },
-               { data : "student_phone" }
-            ]
+   $(document).ready(function(){
+      $('#upload_csv').on('submit', function(event){
+         event.preventDefault();
+         $.ajax({
+            url:"import_dataset",
+            method:"POST",
+            data:new FormData(this),
+            dataType:'csv',
+            contentType:false,
+            processData:false,
+            cache:false,
+            success:function(data)
+            {
+            console.log('Success!');
+            $('#csv_file').val('');
+            $('#data-table').DataTable({
+               data  :  jsonData,
+               columns :  [
+                  { data : "Alias" },
+                  { data : "Variety" },
+                  { data : "student_phone" }
+               ]
+            });
+            }
+            
+         })
+         .done(function(data) {
+            if (data.error) {
+               $('#errorAlert').text(data.error).show();
+               $('#successAlert').hide();
+            }
+            else {
+               $('#successAlert').text(data.file).show();
+               $('#errorAlert').hide();
+            }
          });
-         }
       });
-   });
-});
-   </script>
-<!--  ca c'est plutôt du download -->
-   <!-- <script >
-      $(".btn btn-primary").on("click", function(){
-    $.ajax({
-        type: 'GET',
-        url: '/downloadFile',
-        contentType: 'csv',
-        cache: false,
-        processData: false,
-        async: false,
-        success: function(data) {
-            console.log("coming");
-        },
-    });
    });
    </script> -->
 <br>

@@ -5,66 +5,71 @@ get started
 {% block content %}
 <div style="margin-left: 3%;">
     <h2>Get started</h2>
-    <p>
-        In this page we will see how to use this application with some simple examples. <br>
+    <p style="width:700px">
+        This page presents how to use this application, how to test it with examples and how to use it for generating URIs in your own installation. <br>
         <br>
-        <h3>Initialize account</h3>
-        First of all, you have to <a href="login"> log in</a>. A TEST user (test/test) is avaliable to perform some queries and get used to it. <br>
-        But you also want to create your own user, for that,  <a href="new_user">Create your account</a>. 
-        A new database will be set for you after creating the new account.
-    </p>
-    
-    <p>
-        <h3>Test user</h3>
-        Before messing your database with unintended queries and create URI you don't want, you can have a try with the test user. <br>
-        Log in with the test/test details. <br>
-        If you go to the <a href="your_database">list URI</a> menu, you will realize that some URI have already been generated for the test user.
-        It's time to generate your own.
-    </p>
-    <p>
-        <h3>Generate URI</h3>
-        To create a list of URI go to : <a href="import_dataset">Generate URI</a> <br>
-        <h4>Example data</h4>
-        You can find some dummy data for different types of resources here :
-        <li> <a href="data/example_plant.csv" download="example_plant">plant</a> </li>
-        <li> <a href="data/example_plot.csv" download=example_plot>plot</a> </li>
-        <li> <a href="data/example_pot.csv" download=example_pot>pot</a> </li>
-        <li> <a href="data/example_sensor.csv" download=example_sensor>sensor</a> </li>
-        <li> <a href="data/example_vector.csv" download=example_vector>vector</a> </li>
-        <li> <a href="data/example_leaf.csv" download=example_leaf>leaf</a>  </li>
-        <li> <a href="data/example_ear.csv" download=example_ear>ear</a>    </li>
-        <li> <a href="data/example_actuator.csv" download=example_actuator>actuator </a> </li>
-        <li> <a href="data/example_species.csv" download=example_species>species</a>    </li>
-        There is also an example of <a href="data/example_notclean.csv">non conventionnal table</a>, with some comments before the table
-    </p>
-    
-    <p>
-        <h4>Data structure</h4>
-        To make it simple, this software reads the dataset you uploaded, and creates a URI for each rows of this dataset according
-        to the informations you filled in the required sections. <br>
-        This means that your table has to be "tidy". That is to say starting with a header row (names of columns), followed by a row for each individuals (plant n°1, plant N°2, etc) and
-        a column for each variables (label, genotype, variety, etc).
-    </p>
-    <p>
-        <h4>Non conventionnal structure</h4>
-        If your table has some comments at the beginning, for example "Data acquired on the 15/05/2020, by Jean-Michel Saumon" you 
-        can skip this row using the argument in the "Details" section. <br>
-        &nbsp; &nbsp; <i>Remarque: you should have the metadata in a separate file/sheet and link the two together instead of mixing everything</i> <br>
-        The expected format for the table is the "csv" format, a classic format to manipulate data, this is very simple (just text) and 
-        use the comma (,) as a delimiter between fields. If you are not using the classic delimiter you can specify it in the "Details" section.
-       
-    </p>
-    <p>
-        <h3>Warnings</h3>
-        It is important to notice that if you submit the same dataset twice, it will give you new URI each time, increasing the incremental count 
-        of the selected resource. <br>
-        Because identifiers are meant to be persistent, it is impossible to delete an identifier once created.
-        It is also not possible to reuse an identifier generated in the past for a resource that do not exist anymore.
+        <h3>1. Initialize account</h3>
+        If you just want to have a go, <a href="login"> log in</a> as TEST user :<br>
+        username: test <br>
+        password: test
         <br> <br>
-        <h4>Check your records</h4>
-        You can check what was the last value given to your uri in the <a href="your_database">list URI</a> menu.
+        If you want to use the application, for your installation, go to : <a href="new_user">Create your account</a>. 
+    </p>
+    <h3>2. Using the application for testing URI generation for different objects.</h3>
+    <p style="width:800px"> 
+        It is recommended to perform several tests before creating your own URIs<br>
+        In this case (test) log in with test details (test/test).<br>
+        The <a href="your_database">list URI</a> menu, summarize the last URIs granted by your collegues for each object type.
+        
+    </p>
+    <p style="width:800px">
+        
+        To create URIs go to : <a href="import_dataset">Generate URI</a> <br>
+        Find hereby an example of data for all the objects types handled. They are meant to show you what is the format expected, and allow you to perform tests.
+        Click to download.
+        <li> <a href="data/example_plant.csv" download="example_plant">plant</a>  example. Including Alias, Experiment, Species, Variety. </li>
+        <li> <a href="data/example_plot.csv" download=example_plot>plot</a>  example. Including Alias, Experiment, Species, Variety. </li>
+        <li> <a href="data/example_pot.csv" download=example_pot>pot</a>  example. Including Experiment modality. </li>
+        <li> <a href="data/example_sensor.csv" download=example_sensor>sensor</a> example. Including some date and labels and brand. </li> 
+        <li> <a href="data/example_vector.csv" download=example_vector>vector</a>  example. Including label, brand and dates. </li>
+        <li> <a href="data/example_leaf.csv" download=example_leaf>leaf</a>   example. Including Species, Variety, Alias and related plant object. </li> 
+        <li> <a href="data/example_ear.csv" download=example_ear>ear</a>   example. Including Species, Variety, Alias and related plant object. </li>
+        <li> <a href="data/example_actuator.csv" download=example_actuator>actuator </a>  example. Including label, brand and dates. </li>
+        <li> <a href="data/example_species.csv" download=example_species>species</a>     example with label and scientific name. </li>
+        <li> <a href="data/example_notclean.csv">  non conventionnal table </a> example, with some comments before the table </li>
+    </p>
+    The returned file is by default in your "download" folder under the name "export_URI_plant.csv" (plant/sensors/...).
+
+    <h3>3. Generate URI for your own installation.</h3>
+    <p align="justify" style="width:800px">
+        You need to create files that describes objects in your installation, for each category of objects you are interested in. 
+        They need to have the same format as in the corresponding object category in examples (§2 above). 
+        The file needs a first line with a header (name of colomns), followed by one row per individual (e.g. plant 1, plant 2, etc). 
+        Each line represents a particular object (e.g. one plant or one sensor), each column contains the required information for creating the URI.  
+        Each column contains variables applying to the considered objects (label, genotype, variety, etc). 
+        The expected format for the file is a "csv" with commas (,) as a delimiter between fields. 
+    </p>
+    <h4>Non conventionnal structure</h4>
+    <p align="justify" style="width:800px">
+        
+        If your file contains comments at the beginning, for example "Data acquired on the 15/05/2020, by Jean-Michel Saumon" you 
+        can skip this row using the argument in the "Details" section. 
+        <i>As a rule,  do not insert metadata in the file itself, better insert them in a separate file and link the two files, this will avoid you a lot of problems</i> 
+        The expected format for the table is the "csv" format, a classic format to manipulate data, this is very simple (just text) and 
+        use the comma (,) as a delimiter between fields. 
+        If you are not using the classic delimiter you can specify it in the "Details" section.
+    </p>
+    <h4>Recover your URIs and check them</h4>
+    <p align="justify" style="width:800px">
+        
+        You can check what was the last value given to your uri in the <a href="your_database">list URI</a> menu. 
+        By default, the file with URIs at each line is stored in the 'Downloads files' folder of your computer, under the name "export_URI_leaf" (ear, plot, etc...). 
+        Because identifiers are meant to be persistent, it is impossible to delete an identifier once created. 
+        It is also not possible to reuse an identifier generated in the past for a resource that do not exist anymore. 
+        Hence, a new URI will be created if you submit a file twice. You can use any of the URIs created for the considered object. 
+        You can check what was the last value given to your uri in the list URI menu. 
         Some resources are not incremental (data, images, ...) and thus are using a random URI generated cryptographically. 
+</p> 
     
-    </p> 
 </div>
 {% endblock %}

@@ -16,28 +16,27 @@
   {% endif %}
   
 
-  <p class="important">
+  <p class="important"  align="justify" style="width:800px">
     Welcome to OpenSILEX URI generator. <br>
-    This tool is meant to generate different URIs for your data, according to date, nature of the resource and identity of the owner.
+    This tool is meant to generate different URIs for your data, according to the date, nature of the object and identity of the owner.
   </p> 
-     You can generate URIs for your data in the <a href="import_dataset">Generate URI</a> section
-  <p>
 
-    <br>
-    <b>Important!</b>
-    <p>
-    If you already have identifiers with requirements of your own system. <br>
-    In order to be plainly interoperable with other information system in the EPPN2020 network, what was proposed is to prefix your existing identifiers.
-    </p>
-    You can enrich your identifier here : <a href="existing_ID">I already have an ID</a>
-    <br>
-    This creates a new URI for your data but keeps the former identifier so you can still interoperate with your current system.
-  
-    <br> <br>
-
-    <p style="font-size: 18px;">
-      First time here ? Check the <a href="get_started">Get Started</a> page!
-    </p>
+  <p style="font-size: 18px;">
+    First time here ? Check the <a href="get_started">Get Started</a> page!
+  </p>
+  <br>
+  <p align="justify" style="width:800px">
+    It is recommended to perform several tests (Test user) before creating your own URIs. 
+    Then you can generate URIs for your data in the <a href="import_dataset">Generate URI</a> section
+  <br> <br>
+  <b>If you already have identifiers...</b>
+  <br>
+  If you already have identifiers that fulfill the requirements of your own system. <br>
+  You can create URIs that keep these identifiers with a prefix that contains the necessary informations so your current IDs are interoperable with other information system within EPPN2020, EMPHASIS or other infrastructures.
+  <br>
+  In this case go to : <a href="existing_ID">I already have an ID</a>
+</p>
+    
     
     
 {% endblock %}

@@ -8,10 +8,12 @@ import random
 import pandas as pd
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv"}
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
 db = SQLAlchemy(app)
+
 
 ### Models
 class user_collected_URI(db.Model):

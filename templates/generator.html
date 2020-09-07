@@ -14,23 +14,24 @@
     <body>
         <div class="container-fluid">
           <div class="navbar dropdown" >
-            <a href="home" class="navbar-brand">URI generator</a>
+            <a href="home" class="navbar-brand">URI generator</a> 
+            
             {% if not statut %}
-            <a href="get_started" class="navbar-item">Get started</a>
+            <a href="get_started" class="navbar-item">Get started</a> 
             <a href="login" class="navbar-item">Log in</a>  
             {% endif %}
             {% if statut %}
-              <a href="get_started" class="navbar-item">Get started</a> 
-              <a href="import_dataset" class="navbar-item">Generate new URI</a>
-              <a href="existing_ID" class="navbar-item">Enrich existing ID</a>
-              <a href="your_database" class="navbar-item">list URI</a>            
+            <a href="get_started" class="navbar-item">Get started</a>
+            <a href="import_dataset" class="navbar-item">Generate new URI</a>
+            <a href="existing_ID" class="navbar-item">Enrich existing ID</a>  
+            <a href="your_database" class="navbar-item">last database URI</a> 
+            <a href="logout" class="navbar-item">Log out</a>              
               <!-- <a href="login" class="navbar-item">Change User</a> -->
-              <a href="logout" class="navbar-item">Log out</a>
-              <a style="color: rgb(253, 166, 52); width: 30%; font-size: 20px;">
+            <a style="color: rgb(253, 166, 52); width: 30%; font-size: 20px; float:right"  ;>
                 {{username}}
               </a>
             {% endif %}
-          </div>
+            </div>
             <div class="body-content" id=URI_generator>
               {% block content %}
               {% endblock %}
@@ -42,13 +43,7 @@
         <footer>
           <p>© 2020 - INRAE, UMR Mistea - EPPN2020 - EMPHASIS</p>
       </footer>
-      <!-- <script src="./static/js/vue.js"></script>
-      <script src="./static/js/appVue.js"></script> -->
-      
-      <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>    
-      <script src="{{ url_for('static', filename='js/select2.min.js')}}"></script>    
-      <script src="{{ url_for('static', filename='js/tether.min.js')}}"></script>  
-      <script src="{{ url_for('static', filename='js/vue.js')}}"></script>  
-      <script src="{{ url_for('static', filename='js/appVue.js')}}"></script>
+      <script src="static/js/vue.js"></script>
+      <script src="static/js/appVue.js"></script>
     </body>
 </html>

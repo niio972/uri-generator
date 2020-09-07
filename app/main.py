@@ -12,6 +12,15 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv"}
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
+app.config.supress_callback_exceptions = True
+app.config.update({
+    # as the proxy server will remove the prefix
+    'routes_pathname_prefix': ''
+
+    # the front-end will prefix this string to the requests
+    # that are made to the proxy server
+    , 'requests_pathname_prefix': ''
+})
 db = SQLAlchemy(app)
 
 

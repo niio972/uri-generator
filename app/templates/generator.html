@@ -64,20 +64,18 @@
         $("#import_dataset_form").on("submit", function (event) {
           // Get form
           var form = $("#import_dataset_form")[0];
-
+          var baseurl = window.location.origin + window.location.pathname;
           // Create an FormData object
           var data = new FormData(form);
-          console.log("submit");
           $.ajax({
             data: data,
             type: "POST",
-            url: "/import_dataset",
+            url: baseurl,
             contentType: false,
             processData: false,
             cache: false,
             timeout: 800000,
           }).done(function (data) {
-            console.log(data);
             var blob = new Blob([data]);
             var link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);

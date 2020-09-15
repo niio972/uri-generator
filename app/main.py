@@ -99,7 +99,7 @@ def get_started():
 ### Fonctions
 @app.route("/import_dataset", methods=['POST', 'GET'])
 def import_dataset():
-    if request.method == 'POST':
+    if request.method == 'POST': 
         if not (session['logged_in']):
             flash('You need to be connected to use this functionnality')
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])  
@@ -114,7 +114,7 @@ def import_dataset():
             skipSetting=int(request.form['skiprow'])
         else: 
             skipSetting=0
-        f = request.files['file']
+        f = request.files.get('file')
         f.save(os.path.join(dir_path ,'uploads','uploaded_file.csv'))
 
         try:
@@ -151,13 +151,13 @@ def import_dataset():
         # return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
 
         response = send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
-        resp = Response(response=response,
-                    status=200,
-                    mimetype="text/csv")
-        resp.headers['Content-Type'] = 'text/csv'
-        # response.headers['X-Content-Type-Options'] = 'nosniff'
-        resp.headers['X-Content-Type-Options'] = 'text/csv'
-        return resp
+        # resp = Response(response=response,
+        #             status=200,
+        #             mimetype="text/csv")
+        # resp.headers['Content-Type'] = 'text/csv'
+        # # response.headers['X-Content-Type-Options'] = 'nosniff'
+        # resp.headers['X-Content-Type-Options'] = 'text/csv'
+        return response
     else:
         if 'installation' in session:
             return render_template("import.html", username = session['username'], installation = session['installation'], statut = session['logged_in'])    

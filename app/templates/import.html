@@ -16,7 +16,6 @@ statut %}
   enctype="multipart/form-data"
   action="import_dataset"
 >
-  <!-- <form method="post" enctype="multipart/form-data" action="/import_dataset"></form> -->
   <img
     src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Num%C3%A9ro_1.jpg"
     alt="n1"
@@ -34,9 +33,9 @@ statut %}
   {% endif %} {% endwith %} A file with one row for each resource you want to
   generate a URI for. <br />
   <input type="file" name="file" id="file" accept="text/csv" />
-  <p>Details: <i v-on:click="toggleDetails()" class="arrow down"></i></p>
+  <p v-on:click="toggleDetails()">Details: <i class="arrow down"></i></p>
   <br />
-  <div v-if="Details" style="background-color: ivory; margin-left: 50px">
+  <div v-if="Details" style="margin-left: 50px">
     <label>Field separator</label> <br />
     <input type="checkbox" id="sep_comma" name="sep" value="," checked />
     <label for="sep_comma">Comma (,)</label>
@@ -129,48 +128,6 @@ statut %}
 
   <p id="successAlert" style="display: none">Success!</p>
   <p id="errorAlert" style="display: none">Fail!</p>
-
-  <!-- <script>
-// ca ressemble à l'upload
-   $(document).ready(function(){
-      $('#upload_csv').on('submit', function(event){
-         event.preventDefault();
-         $.ajax({
-            url:"import_dataset",
-            method:"POST",
-            data:new FormData(this),
-            dataType:'csv',
-            contentType:false,
-            processData:false,
-            cache:false,
-            success:function(data)
-            {
-            console.log('Success!');
-            $('#csv_file').val('');
-            $('#data-table').DataTable({
-               data  :  jsonData,
-               columns :  [
-                  { data : "Alias" },
-                  { data : "Variety" },
-                  { data : "student_phone" }
-               ]
-            });
-            }
-            
-         })
-         .done(function(data) {
-            if (data.error) {
-               $('#errorAlert').text(data.error).show();
-               $('#successAlert').hide();
-            }
-            else {
-               $('#successAlert').text(data.file).show();
-               $('#errorAlert').hide();
-            }
-         });
-      });
-   });
-   </script> -->
   <br />
   <i>You can find the file in your Download folder (default settings)</i>
 </form>

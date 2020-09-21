@@ -83,7 +83,7 @@ def create_user():
         db.session.add(init6)
         db.session.add(init7)
         db.session.commit()
-        return render_template("login.html", statut = session['logged_in'])
+        return redirect(url_for("login.html"), statut = session['logged_in'])
     else:
         return render_template('new_user.html')
 

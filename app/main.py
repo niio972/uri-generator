@@ -83,7 +83,9 @@ def create_user():
         db.session.add(init6)
         db.session.add(init7)
         db.session.commit()
-        return redirect(url_for("login", statut = session['logged_in']))
+        session['username'] = request.form['user']
+        session['logged_in'] = True
+        return redirect(url_for('home', username = session['username'], statut = session['logged_in']))
     else:
         return render_template('new_user.html')
 

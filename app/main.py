@@ -218,8 +218,8 @@ def etiquette():
             etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
             zipObj.write(os.path.join(dir_path, "qrcodes", "png", data.URI[uri][-10:] + '.png'))
         zipObj.close()
-        repertoire = os.path.join(dir_path, "qrcodes", "png")
-        os.system('rm -rf repertoire')
+        repertoire = os.path.join(dir_path, "qrcodes", "png/*")
+        os.system('rm -r ' + repertoire)
         return send_from_directory(directory = dir_path, filename = os.path.join('qrcodes', "qrcodes.zip"))
     else:
         return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
@@ -345,8 +345,8 @@ def generate_qr_code(URI, variety):
     url.png(chemin, scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
     img = Image.open(chemin)
     draw = ImageDraw.Draw(img)
-    draw.text((20, 20), cod, font = sans16)
-    draw.text((120, 20), "Variety: " + variety, font = sans16)
+    draw.text((15, 20), cod, font = sans16)
+    draw.text((150, 20), "Variety: " + variety, font = sans16)
     img.save(chemin)
     return(url)
 

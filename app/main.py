@@ -7,6 +7,10 @@ import requests
 import random
 import pandas as pd
 import os 
+import pyqrcode
+import png
+from PIL import Image , ImageDraw, ImageFont
+from zipfile37 import ZipFile
 dir_path = os.path.dirname(os.path.realpath(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv"}
 app = Flask(__name__)
@@ -17,15 +21,15 @@ db = SQLAlchemy(app)
 
 ### Models
 class user_collected_URI(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(200), nullable=False)
-    type = db.Column(db.String(200), nullable=False)
-    lastvalue = db.Column(db.String(200), nullable=False, default=1)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key = True)
+    user = db.Column(db.String(200), nullable = False)
+    type = db.Column(db.String(200), nullable = False)
+    lastvalue = db.Column(db.String(200), nullable = False, default=1)
+    date_created = db.Column(db.DateTime, default = datetime.utcnow)
 
 class User(db.Model):
     __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String)
     #to avoid storage of clear text password
     password_hash =db.Column(db.String)
@@ -47,7 +51,7 @@ def home():
         session['username']=""
         return render_template('home.html', username = "", statut = session['logged_in'])
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
@@ -59,7 +63,7 @@ def login():
         return render_template('home.html', username = session['username'], statut = session['logged_in'])
     return render_template("login.html", statut = session['logged_in'])
 
-@app.route("/new_user", methods=['GET', 'POST'])
+@app.route("/new_user", methods = ['GET', 'POST'])
 def create_user():
     if request.method=='POST':
         new_user = User(username = request.form['user'])
@@ -150,8 +154,6 @@ def import_dataset():
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
         dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
-        # return  send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
-
         response = send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
         # resp = Response(response=response,
         #             status=200,
@@ -205,24 +207,38 @@ def existing_id():
         else:
             return render_template("existing.html", username = session['username'], installation = 'your installation', statut = session['logged_in'])    
 
+@app.route("/qrcodes", methods = ['GET', 'POST'])
+def etiquette():
+    if(request.method == 'POST'):
+        data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
+        URI = data.URI
+        variety = data.Variety
+        zipObj = ZipFile(os.path.join("qrcodes",'qrcodes.zip'), 'w')
+        for uri in data.index :
+            etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
+            zipObj.write(os.path.join(dir_path, "qrcodes",data.URI[uri][-10:] + '.png'))  
+        zipObj.close()
+        return send_from_directory(directory = dir_path, filename = os.path.join('qrcodes', "qrcodes.zip"))
+    else:
+        return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
 
 ### Actions
 @app.route("/your_database")
 def your_database():
     collections = user_collected_URI.query.filter_by(user = session['username'])
-    return render_template("your_database.html", collections=collections, username = session['username'], statut = session['logged_in'])
+    return render_template("your_database.html", collections = collections, username = session['username'], statut = session['logged_in'])
 
 @app.route('/data/<path:filename>')
 def download(filename):
     if "example" in filename:
-        return send_from_directory(directory=dir_path, filename=os.path.join('download',filename), mimetype="text/csv", as_attachment=True)
+        return send_from_directory(directory = dir_path, filename = os.path.join('download',filename), mimetype = "text/csv", as_attachment = True)
 
 @app.route('/export_all_db')
 def export_all_db():
-    return(send_from_directory(directory="", filename='custom_design.db', mimetype="application/octet-stream"))
+    return(send_from_directory(directory = "", filename = 'custom_design.db', mimetype = "application/octet-stream"))
 
 ### Functions
-def URIgenerator_series(host, installation, resource_type, year="", lastvalue = "001", project="", datasup = {} ):
+def URIgenerator_series(host, installation, resource_type, year = "", lastvalue = "001", project = "", datasup = {} ):
     if host[-1] != "/":
         host = host + "/" # Ensure host url ends with a slash
     finalURI = host + installation + "/"
@@ -285,7 +301,7 @@ def URIgenerator_series(host, installation, resource_type, year="", lastvalue = 
 
     return finalURI
 
-def add_URI_col(data, host = "", installation="", resource_type = "", project ="", year = "2017", datasup ="" ):
+def add_URI_col(data, host = "", installation = "", resource_type = "", project = "", year = "2017", datasup = "" ):
     activeDB = user_collected_URI.query.filter_by(user = session['username'], type = resource_type).first()
     datURI = []
     if(resource_type in ['plant', 'plot', 'pot', 'sensor', 'vector', 'actuator']):
@@ -318,5 +334,18 @@ def add_URI_col(data, host = "", installation="", resource_type = "", project ="
     data = data.assign(URI = datURI)
     return data
 
+def generate_qr_code(URI, variety):
+    fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
+    sans16 = ImageFont.truetype(fontPath, 13)
+    cod = URI[-10:]
+    url = pyqrcode.create(URI)
+    url.png(os.path.join(dir_path, "qrcodes", cod +'.png'), scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
+    img = Image.open(os.path.join(dir_path, "qrcodes", cod +'.png'))
+    draw = ImageDraw.Draw(img)
+    draw.text((20, 20), cod, font = sans16)
+    draw.text((120, 20), "Variety: " + variety, font = sans16)
+    img.save(os.path.join(dir_path, "qrcodes", cod +'.png'))
+    return(url)
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True, threaded=True, port=3838)
+    app.run(host = '0.0.0.0', debug = True, threaded = True, port = 3838)

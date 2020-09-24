@@ -213,11 +213,13 @@ def etiquette():
         data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
         URI = data.URI
         variety = data.Variety
-        zipObj = ZipFile(os.path.join("qrcodes",'qrcodes.zip'), 'w')
+        zipObj = ZipFile(os.path.join(dir_path, "qrcodes",'qrcodes.zip'), 'w')
         for uri in data.index :
             etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
-            zipObj.write(os.path.join(dir_path, "qrcodes",data.URI[uri][-10:] + '.png'))  
+            zipObj.write(os.path.join(dir_path, "qrcodes", "png", data.URI[uri][-10:] + '.png'))
         zipObj.close()
+        repertoire = os.path.join(dir_path, "qrcodes", "png")
+        os.system('rm -rf repertoire')
         return send_from_directory(directory = dir_path, filename = os.path.join('qrcodes', "qrcodes.zip"))
     else:
         return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
@@ -335,16 +337,17 @@ def add_URI_col(data, host = "", installation = "", resource_type = "", project 
     return data
 
 def generate_qr_code(URI, variety):
-    fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
-    sans16 = ImageFont.truetype(fontPath, 13)
+    fontPath = "app/static/fonts/DejaVuSansMono-Bold.ttf"
+    sans16 = ImageFont.truetype(fontPath, 20)
     cod = URI[-10:]
     url = pyqrcode.create(URI)
-    url.png(os.path.join(dir_path, "qrcodes", cod +'.png'), scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
-    img = Image.open(os.path.join(dir_path, "qrcodes", cod +'.png'))
+    chemin = os.path.join(dir_path, "qrcodes", "png", cod +'.png')
+    url.png(chemin, scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
+    img = Image.open(chemin)
     draw = ImageDraw.Draw(img)
     draw.text((20, 20), cod, font = sans16)
     draw.text((120, 20), "Variety: " + variety, font = sans16)
-    img.save(os.path.join(dir_path, "qrcodes", cod +'.png'))
+    img.save(chemin)
     return(url)
 
 if __name__ == "__main__":

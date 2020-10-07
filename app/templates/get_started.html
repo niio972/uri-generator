@@ -39,7 +39,7 @@ get started
         <li> <a href="data/example_species.csv" download=example_species>species</a>     example with label and scientific name. </li>
         <li> <a href="data/example_notclean.csv">  non conventionnal table </a> example, with some comments before the table </li>
     </p>
-    The returned file is by default in your "download" folder under the name "export_URI_plant.csv" (plant/sensors/...).
+    <i>The returned file is by default in your "download" folder under the name "export_URI_plant.csv" (plant/sensors/...).</i>
 
     <h3>3. Generate URI for your own installation.</h3>
     <p align="justify" style="width:800px">
@@ -48,13 +48,13 @@ get started
         The file needs a first line with a header (name of colomns), followed by one row per individual (e.g. plant 1, plant 2, etc). 
         Each line represents a particular object (e.g. one plant or one sensor), each column contains the required information for creating the URI.  
         Each column contains variables applying to the considered objects (label, genotype, variety, etc). 
-        The expected format for the file is a "csv". 
+        The expected format for the file is a "csv".
     </p>
     <h4>Non conventionnal structure</h4>
     <p align="justify" style="width:800px">
         
         If your file contains comments at the beginning, for example "Data acquired on the 15/05/2020, by Jean-Michel Saumon" you 
-        can skip this row using the argument in the "Details" section. 
+        can skip this row using the argument in the "Details" section. <br>
         <i>As a rule,  do not insert metadata in the file itself, better insert them in a separate file and link the two files, this will avoid you a lot of problems</i> <br>
         The expected format for the table is the "csv" format, a classic format to manipulate data, this is very simple (just text) and 
         use the comma (,) as a delimiter between fields. 
@@ -69,7 +69,7 @@ get started
         It is also not possible to reuse an identifier generated in the past for a resource that do not exist anymore. 
         Hence, a new URI will be created if you submit a file twice. You can use any of the URIs created for the considered object. <br>
         You can check what was the last value given to your uri in the list URI menu. 
-        Some resources are not incremental (data, images, ...) and thus are using a random URI generated. 
+        Some resources are not incremental (data, images, ...) and thus are using a random URI generated.
 </p> 
     
 </div>

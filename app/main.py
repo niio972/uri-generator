@@ -16,6 +16,15 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv"}
 app = Flask(__name__)
 app.secret_key = b'52d8851b5d6cbe74f7c8bb01974008140b0ae997e5b2efd987ed5b90'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_design.db'
+app.config.supress_callback_exceptions = True
+app.config.update({
+    # as the proxy server will remove the prefix
+    'routes_pathname_prefix': ''
+
+    # the front-end will prefix this string to the requests
+    # that are made to the proxy server
+    , 'requests_pathname_prefix': ''
+})
 db = SQLAlchemy(app)
 
 
@@ -153,7 +162,7 @@ def import_dataset():
         if request.form.get('resource_type') in ['sensor', 'vector', 'data', 'image', 'event', 'annotation','actuator']:
             dataset_URI = add_URI_col(data=dataset, host = session['hostname'], installation=session['installation'], resource_type = request.form.get('resource_type') , year = request.form['year'])
         
-        dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI'+request.form.get('resource_type') +'.csv'))
+        dataset_URI.to_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
         response = send_from_directory(directory=dir_path, filename=os.path.join('uploads','export_URI'+request.form['resource_type']  +'.csv'), mimetype="text/csv", as_attachment=True)
         # resp = Response(response=response,
         #             status=200,

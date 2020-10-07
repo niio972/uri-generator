@@ -122,13 +122,31 @@ statut %}
   </div>
 
   <br />
-  <button type="submit" class="btn btn-primary" id="upload_csv">
+  <button type="submit" class="button btn-default" id="upload_csv">
     Generate URI
   </button>
   <br />
+  <br />
   <i>You can find the file in your Download folder (default settings)</i>
 </form>
-
-<a href="qrcodes">Generate QR-Codes ?</a>
+<br />
+<form action="/qrcodes" method="POST">
+  <select
+    name="resource_type"
+    id="resource_type"
+    v-model="resource_type"
+    hidden
+  >
+    <option value="plant">plant</option>
+    <option value="plot">plot</option>
+  </select>
+  <button
+    class="button btn-default"
+    type="submit"
+    v-if="supl_data.qrcodes.includes(resource_type)"
+  >
+    Generate QR-Codes ?
+  </button>
+</form>
 
 {% endblock %}

@@ -122,7 +122,7 @@ statut %}
   </div>
 
   <br />
-  <button type="submit" class="btn btn-primary" id="upload_csv">
+  <button type="submit" class="btn btn-default" id="upload_csv">
     Generate URI
   </button>
   <br />
@@ -139,7 +139,11 @@ statut %}
     <option value="plant">plant</option>
     <option value="plot">plot</option>
   </select>
-  <button type="submit" v-if="supl_data.qrcodes.includes(resource_type)">
+  <button
+    class="btn btn-default"
+    type="submit"
+    v-if="supl_data.qrcodes.includes(resource_type)"
+  >
     Generate QR-Codes ?
   </button>
 </form>

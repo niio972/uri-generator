@@ -9,6 +9,7 @@ import pandas as pd
 import os 
 import pyqrcode
 import png
+import tempfile
 from PIL import Image , ImageDraw, ImageFont
 from zipfile37 import ZipFile
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -218,18 +219,19 @@ def existing_id():
 
 @app.route("/qrcodes", methods = ['GET', 'POST'])
 def etiquette():
-    if(request.method == 'POST'):
+    if (request.method == 'POST'):
+        tempfile.mkdtemp()
         data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
         URI = data.URI
         variety = data.Variety
-        zipObj = ZipFile(os.path.join(dir_path, "qrcodes",'qrcodes.zip'), 'w')
+        zipObj = ZipFile(os.path.join(tempfile.gettempdir(),"qrcodes.zip"), 'w')
         for uri in data.index :
             etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
-            zipObj.write(os.path.join(dir_path, "qrcodes", "png", data.URI[uri][-10:] + '.png'))
+            zipObj.write(os.path.join(tempfile.gettempdir(), data.URI[uri][-10:] + '.png'))
         zipObj.close()
-        repertoire = os.path.join(dir_path, "qrcodes", "png/*")
-        os.system('rm -r ' + repertoire)
-        return send_from_directory(directory = dir_path, filename = os.path.join('qrcodes', "qrcodes.zip"))
+        # repertoire = os.path.join(tempfile.gettempdir(), "qrcodes", "png/*")
+        # os.system('rm -r ' + repertoire)
+        return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
     else:
         return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
 
@@ -350,7 +352,7 @@ def generate_qr_code(URI, variety):
     sans16 = ImageFont.truetype(fontPath, 20)
     cod = URI[-10:]
     url = pyqrcode.create(URI)
-    chemin = os.path.join(dir_path, "qrcodes", "png", cod +'.png')
+    chemin = os.path.join(tempfile.gettempdir(), cod +'.png')
     url.png(chemin, scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
     img = Image.open(chemin)
     draw = ImageDraw.Draw(img)

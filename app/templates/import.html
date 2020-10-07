@@ -129,6 +129,19 @@ statut %}
   <i>You can find the file in your Download folder (default settings)</i>
 </form>
 
-<a href="qrcodes">Generate QR-Codes ?</a>
+<form action="/qrcodes" method="POST">
+  <select
+    name="resource_type"
+    id="resource_type"
+    v-model="resource_type"
+    hidden
+  >
+    <option value="plant">plant</option>
+    <option value="plot">plot</option>
+  </select>
+  <button type="submit" v-if="supl_data.qrcodes.includes(resource_type)">
+    Generate QR-Codes ?
+  </button>
+</form>
 
 {% endblock %}

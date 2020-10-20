@@ -221,10 +221,10 @@ def existing_id():
             return render_template("existing.html", username = session['username'], installation = 'your installation', statut = session['logged_in'])    
 
 @app.route("/qrcodes", methods = ['GET', 'POST'])
-def etiquette():
-    if (request.method == 'POST'):
-        tempfile.mkdtemp()
-        data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
+def etiquette(data):
+    # if (request.method == 'POST'):
+        # tempfile.mkdtemp()
+        # data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
         URI = data.URI
         variety = data.Variety
         zipObj = ZipFile(os.path.join(tempfile.gettempdir(),"qrcodes.zip"), 'w')
@@ -236,20 +236,24 @@ def etiquette():
         # os.system('rm -r ' + repertoire)
 
         ## TODO Parallelisation
-        return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
-    else:
-        return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
+        # return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
+        return "sucess"
+    # else:
+        # return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
+        
 
-def Premier_essai_parallele(data):
+def Premier_essai_parallele():
     CPU_count = multiprocessing.cpu_count()
     data=pd.read_csv("/home/jeaneudes/Documents/URI/generator/app/uploads/export_URIplant.csv")
+    tempfile.mkdtemp()
+    
     df_split = np.array_split(data, CPU_count)
-    try:
-        with multiprocessing.Pool() as pool:
-            pool.map(etiquette, df_split)
+    with multiprocessing.Pool() as pool:
+        pool.map(etiquette, df_split)
         
     return "une fonction qui fait de la parallelisation..."
 
+Premier_essai_parallele()
 
 ### Actions
 @app.route("/your_database")
@@ -368,7 +372,8 @@ def generate_qr_code(URI, variety):
     sans16 = ImageFont.truetype(fontPath, 20)
     cod = URI[-10:]
     url = pyqrcode.create(URI)
-    chemin = os.path.join(tempfile.gettempdir(), cod +'.png')
+    # chemin = os.path.join(tempfile.gettempdir(), cod +'.png')
+    chemin = os.path.join("qrcodes", cod +'.png')
     url.png(chemin, scale = 8,  module_color = '#000', background = '#fff', quiet_zone = 8)
     img = Image.open(chemin)
     draw = ImageDraw.Draw(img)

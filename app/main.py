@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 import hashlib
 import requests
 import random
+import numpy as np
+import multiprocessing
 import pandas as pd
 import os 
 import pyqrcode
@@ -12,6 +14,7 @@ import png
 import tempfile
 from PIL import Image , ImageDraw, ImageFont
 from zipfile37 import ZipFile
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv"}
 app = Flask(__name__)
@@ -231,9 +234,22 @@ def etiquette():
         zipObj.close()
         # repertoire = os.path.join(tempfile.gettempdir(), "qrcodes", "png/*")
         # os.system('rm -r ' + repertoire)
+
+        ## TODO Parallelisation
         return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
     else:
         return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
+
+def Premier_essai_parallele(data):
+    CPU_count = multiprocessing.cpu_count()
+    data=pd.read_csv("/home/jeaneudes/Documents/URI/generator/app/uploads/export_URIplant.csv")
+    df_split = np.array_split(data, CPU_count)
+    try:
+        with multiprocessing.Pool() as pool:
+            pool.map(etiquette, df_split)
+        
+    return "une fonction qui fait de la parallelisation..."
+
 
 ### Actions
 @app.route("/your_database")

@@ -226,13 +226,13 @@ def qr_codes_parallel():
         CPU_count = multiprocessing.cpu_count()
         data=pd.read_csv(os.path.join(dir_path,'uploads','export_URI' + request.form.get('resource_type') + '.csv'))
         tempfile.mkdtemp()
-        # zipObj = ZipFile(os.path.join(tempfile.gettempdir(), "qrcodes.zip"), 'w')
+        zipObj = ZipFile(os.path.join(tempfile.gettempdir(), "qrcodes.zip"), 'w')
         
         df_split = np.array_split(data, CPU_count)
         with multiprocessing.Pool() as pool:
-            pool.map(etiquette, df_split)
+            pool.map(etiquette, df_split )
 
-        # zipObj.close()
+        zipObj.close()
         return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
     else:
         return render_template("qrcodes.html", username = session['username'],  statut = session['logged_in'])
@@ -240,11 +240,11 @@ def qr_codes_parallel():
 def etiquette(data): 
         URI = data.URI
         variety = data.Variety
-        zipObj = ZipFile(os.path.join(tempfile.gettempdir(),"qrcodes.zip"), 'w')
+        # zipObj = ZipFile(os.path.join(tempfile.gettempdir(),"qrcodes.zip"), 'w')
         for uri in data.index :
             etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
             zipObj.write(os.path.join(tempfile.gettempdir(), data.URI[uri][-10:] + '.png'))
-        zipObj.close()
+        # zipObj.close()
         # repertoire = os.path.join(tempfile.gettempdir(), "qrcodes", "png/*")
         # os.system('rm -r ' + repertoire)
 

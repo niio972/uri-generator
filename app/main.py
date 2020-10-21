@@ -231,7 +231,9 @@ def qr_codes_parallel():
         df_split = np.array_split(data, CPU_count)
         with multiprocessing.Pool() as pool:
             pool.map(etiquette, df_split )
-
+        
+        for uri in data.index:
+            zipObj.write(os.path.join(tempfile.gettempdir(), data.URI[uri][-10:] + '.png'))
         zipObj.close()
         return send_from_directory(directory = tempfile.gettempdir(), filename =  "qrcodes.zip")
     else:
@@ -243,7 +245,6 @@ def etiquette(data):
         # zipObj = ZipFile(os.path.join(tempfile.gettempdir(),"qrcodes.zip"), 'w')
         for uri in data.index :
             etiquette = generate_qr_code(URI = data.URI[uri], variety = data.Variety[uri])
-            zipObj.write(os.path.join(tempfile.gettempdir(), data.URI[uri][-10:] + '.png'))
         # zipObj.close()
         # repertoire = os.path.join(tempfile.gettempdir(), "qrcodes", "png/*")
         # os.system('rm -r ' + repertoire)

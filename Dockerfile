@@ -1,6 +1,5 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.7
 LABEL maintainer="Jean-Eudes Hollebecq <jean-eudes.hollebecq@inrae.fr>"
-RUN echo "lol"
 RUN /usr/local/bin/python -m pip install --upgrade pip
 COPY ./app /app
 RUN chmod +rwx -R /app

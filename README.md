@@ -31,8 +31,8 @@ you can read the requirements.txt file and install all the dependancies.
 The app is also compatible with Docker, you can build an image reading the dockerfile.
 
 ``` bash
-docker build -t generator .
-docker run -d --name=generatorURI -p 3838:3838 generator
+docker build -t generator https://github.com/niio972/uri-generator.git
+docker run -d --restart unless-stopped  --name=generatorURI -p 9991:3838 generator
 ```
 
 ## Adapt it  
